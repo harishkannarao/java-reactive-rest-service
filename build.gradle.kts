@@ -35,8 +35,9 @@ allprojects {
 
 	tasks.withType<Test> {
 		useJUnitPlatform()
-		val properties = System.getProperties().entries.associate { it.key.toString() to it.value }
-		systemProperties(properties)
+		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
+		val finalSystemProperties = commandLineProperties + mapOf(Pair("reactor.netty.http.server.accessLogEnabled", "true"))
+		systemProperties(finalSystemProperties)
 	}
 
 	tasks.withType<Jar> {
@@ -45,9 +46,9 @@ allprojects {
 
 	task<JavaExec>("runLocal") {
 		description = "Runs application locally"
-		mainClass.set("com.harishkannarao.java.spring.rest.javareactiverestservice.JavaReactiveRestServiceApplication")
+		mainClass.set("com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner")
 		classpath = sourceSets["test"].runtimeClasspath
-		args(listOf("--server.port=8080"))
+		args(listOf("--spring.profiles.active=int-test", "--server.port=8080"))
 		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
 		val finalSystemProperties = commandLineProperties + mapOf(Pair("reactor.netty.http.server.accessLogEnabled", "true"))
 		systemProperties(finalSystemProperties)
