@@ -35,7 +35,7 @@ allprojects {
 
 	tasks.withType<Test> {
 		useJUnitPlatform()
-		val properties = System.getProperties().entries.map { it.key.toString() to it.value }.toMap()
+		val properties = System.getProperties().entries.associate { it.key.toString() to it.value }
 		systemProperties(properties)
 	}
 
