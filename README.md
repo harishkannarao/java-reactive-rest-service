@@ -3,7 +3,7 @@
 This repository is to showcase Reactive REST Service using Java and Spring Boot.
 
 ## Github Actions Build status
-[![Build Status](https://github.com/harishkannarao/FeatureToggleTestingWithSpringBoot/workflows/CI-master/badge.svg)](https://github.com/harishkannarao/FeatureToggleTestingWithSpringBoot/actions?query=workflow%3ACI-master)
+[![Build Status](https://github.com/harishkannarao/java-reactive-rest-service/workflows/CI-main/badge.svg)](https://github.com/harishkannarao/java-reactive-rest-service/actions?query=workflow%3ACI-main)
 
 ## Required Softwares, Tools and Version
 * Java JDK Version: 11
