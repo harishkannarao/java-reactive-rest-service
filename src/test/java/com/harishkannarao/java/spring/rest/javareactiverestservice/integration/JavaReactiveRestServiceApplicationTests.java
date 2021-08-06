@@ -2,7 +2,6 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 class JavaReactiveRestServiceApplicationTests extends AbstractBaseIntegrationTest {
 

@@ -10,6 +10,7 @@ val reactorTestVersion: String by project
 val springBootVersion: String by project
 val r2dbcPostgresqlVersion: String by project
 val postgresqlVersion: String by project
+val testContainersVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
 version = ""
@@ -31,6 +32,7 @@ allprojects {
 //		runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
 		testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testImplementation("io.projectreactor:reactor-test:$reactorTestVersion")
+		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
 	}
 
 	tasks.withType<Test> {

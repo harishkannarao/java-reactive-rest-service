@@ -6,4 +6,8 @@ set -e
 # Print the commands as it is executed. Useful for debugging
 set -x
 
+# Verify dependencies
+docker --version
+
+# Run build
 ./gradlew clean build

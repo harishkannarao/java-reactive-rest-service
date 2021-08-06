@@ -1,5 +1,6 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.PostgresTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.ShutdownExtension;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +15,15 @@ public abstract class AbstractBaseIntegrationTest {
     private List<String> getIntegrationTestProperties() {
         return List.of(
                 "--spring.profiles.active=int-test",
-                "--server.port=8081"
+                "--server.port=0"
         );
     }
 
     @BeforeEach
     public void resetApplication() {
+        if (!PostgresTestRunner.isRunning()) {
+            PostgresTestRunner.start();
+        }
         if (!SpringBootTestRunner.isRunning()) {
             SpringBootTestRunner.start(getIntegrationTestProperties());
         }
