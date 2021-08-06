@@ -48,9 +48,9 @@ allprojects {
 
 	task<JavaExec>("runLocal") {
 		description = "Runs application locally"
-		mainClass.set("com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner")
+		mainClass.set("com.harishkannarao.java.spring.rest.javareactiverestservice.runner.LocalRunnerWithFixtures")
 		classpath = sourceSets["test"].runtimeClasspath
-		args(listOf("--spring.profiles.active=int-test", "--server.port=8080"))
+		args(emptyList<String>())
 		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
 		val finalSystemProperties = commandLineProperties + mapOf(Pair("reactor.netty.http.server.accessLogEnabled", "true"))
 		systemProperties(finalSystemProperties)

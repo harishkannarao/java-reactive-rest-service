@@ -23,10 +23,6 @@ public class SpringBootTestRunner {
         }
     }
 
-    public static void main(String[] args) {
-        start(Arrays.asList(args));
-    }
-
     public static void start(List<String> args) {
         String[] propertiesArray = args.toArray(String[]::new);
         context = SpringApplication.run(JavaReactiveRestServiceApplication.class, propertiesArray);
