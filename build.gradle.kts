@@ -27,9 +27,11 @@ allprojects {
 
 	dependencies {
 		implementation("org.springframework.boot:spring-boot-starter-webflux:$springBootVersion")
-//		implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:$springBootVersion")
-//		runtimeOnly("io.r2dbc:r2dbc-postgresql:$r2dbcPostgresqlVersion")
-//		runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
+		implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:$springBootVersion")
+		implementation("io.r2dbc:r2dbc-postgresql:$r2dbcPostgresqlVersion") {
+			exclude("io.projectreactor.netty", "reactor-netty")
+		}
+		implementation("org.postgresql:postgresql:$postgresqlVersion")
 		testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testImplementation("io.projectreactor:reactor-test:$reactorTestVersion")
 		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
