@@ -10,6 +10,7 @@ val reactorTestVersion: String by project
 val springBootVersion: String by project
 val r2dbcPostgresqlVersion: String by project
 val postgresqlVersion: String by project
+val flywayVersion: String by project
 val testContainersVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
@@ -32,6 +33,7 @@ allprojects {
 			exclude("io.projectreactor.netty", "reactor-netty")
 		}
 		implementation("org.postgresql:postgresql:$postgresqlVersion")
+		implementation("org.flywaydb:flyway-core:$flywayVersion")
 		testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testImplementation("io.projectreactor:reactor-test:$reactorTestVersion")
 		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")

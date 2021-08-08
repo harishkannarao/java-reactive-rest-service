@@ -40,4 +40,8 @@ public class PostgresTestRunner {
     public static String getPassword() {
         return PASSWORD;
     }
+
+    public static String getJdbcUrl() {
+        return String.format("jdbc:postgresql://%s:%s/%s", getHost(), getPort(), getUsername());
+    }
 }

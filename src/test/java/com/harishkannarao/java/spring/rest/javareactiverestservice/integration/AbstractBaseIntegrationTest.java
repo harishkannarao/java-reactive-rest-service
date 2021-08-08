@@ -21,7 +21,10 @@ public abstract class AbstractBaseIntegrationTest {
                 "--postgresql-datasource.port=" + PostgresTestRunner.getPort(),
                 "--postgresql-datasource.database=" + PostgresTestRunner.getUsername(),
                 "--postgresql-datasource.username=" + PostgresTestRunner.getUsername(),
-                "--postgresql-datasource.password=" + PostgresTestRunner.getPassword()
+                "--postgresql-datasource.password=" + PostgresTestRunner.getPassword(),
+                "--spring.flyway.url=" + PostgresTestRunner.getJdbcUrl(),
+                "--spring.flyway.user=" + PostgresTestRunner.getUsername(),
+                "--spring.flyway.password=" + PostgresTestRunner.getPassword()
         );
     }
 

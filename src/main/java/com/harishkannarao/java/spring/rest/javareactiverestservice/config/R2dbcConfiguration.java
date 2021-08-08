@@ -17,16 +17,17 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
         this.environment = environment;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     @Bean
     public ConnectionFactory connectionFactory() {
         return new PostgresqlConnectionFactory(
                 PostgresqlConnectionConfiguration.builder()
-                .host(environment.getProperty("postgresql-datasource.host"))
-                .port(environment.getProperty("postgresql-datasource.port", Integer.class))
-                .database(environment.getProperty("postgresql-datasource.database"))
-                .username(environment.getProperty("postgresql-datasource.username"))
-                .password(environment.getProperty("postgresql-datasource.password"))
+                .host(environment.getRequiredProperty("postgresql-datasource.host"))
+                .port(environment.getRequiredProperty("postgresql-datasource.port", Integer.class))
+                .database(environment.getRequiredProperty("postgresql-datasource.database"))
+                .username(environment.getRequiredProperty("postgresql-datasource.username"))
+                .password(environment.getRequiredProperty("postgresql-datasource.password"))
                 .build()
         );
     }
