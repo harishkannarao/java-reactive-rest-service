@@ -1,18 +1,21 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.runner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LocalRunnerWithFixtures {
 
     public static void main(String[] args) {
         PostgresTestRunner.start();
-        List<String> inputArgs = Arrays.asList(args);
-        List<String> finalArgs = new ArrayList<>();
-        finalArgs.addAll(inputArgs);
-        finalArgs.addAll(getPostgresTestProperties());
-        finalArgs.addAll(getSpringTestProperties());
+        List<String> finalArgs = Stream.of(
+                        Arrays.asList(args),
+                        getPostgresTestProperties(),
+                        getSpringTestProperties()
+                ).flatMap(Collection::stream)
+                .collect(Collectors.toList());
         SpringBootTestRunner.start(finalArgs);
     }
 
