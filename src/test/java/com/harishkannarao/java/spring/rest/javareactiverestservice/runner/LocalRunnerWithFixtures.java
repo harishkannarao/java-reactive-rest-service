@@ -11,9 +11,9 @@ public class LocalRunnerWithFixtures {
     public static void main(String[] args) {
         PostgresTestRunner.start();
         List<String> finalArgs = Stream.of(
-                        Arrays.asList(args),
                         getPostgresTestProperties(),
-                        getSpringTestProperties()
+                        getSpringTestProperties(),
+                        Arrays.asList(args)
                 ).flatMap(Collection::stream)
                 .collect(Collectors.toList());
         SpringBootTestRunner.start(finalArgs);
