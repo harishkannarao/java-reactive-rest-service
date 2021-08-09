@@ -2,12 +2,13 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("ConstantConditions")
 public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTest {
@@ -40,7 +41,7 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         UUID createdId = underTest.createCustomer(input).block();
         assertThat(createdId).isEqualTo(input.getId());
 
-        assertThatThrownBy(() -> underTest.createCustomer(input).block())
-                .hasMessageContaining("duplicate key value violates unique constraint \"unique_index_jsonb_id\"");
+        DataIntegrityViolationException result = Assertions.assertThrows(DataIntegrityViolationException.class, () -> underTest.createCustomer(input).block());
+        assertThat(result).hasMessageContaining("duplicate key value violates unique constraint", "unique_index_jsonb_id");
     }
 }
