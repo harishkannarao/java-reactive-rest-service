@@ -12,10 +12,6 @@ class JavaReactiveRestServiceApplicationTests extends AbstractBaseIntegrationTes
 
     @Test
     void contextLoads() {
-        DatabaseClient databaseClient = getBean(DatabaseClient.class);
-        Map<String, Object> first = databaseClient.sql("select 1 as count").fetch().first().block();
-        assertThat(first.get("count")).isEqualTo(1);
-
         webTestClient()
                 .get()
                 .uri("/")
