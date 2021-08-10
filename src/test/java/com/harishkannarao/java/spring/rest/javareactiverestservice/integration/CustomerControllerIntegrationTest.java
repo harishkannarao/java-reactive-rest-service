@@ -9,6 +9,7 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import java.util.List;
 
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.webTestClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures.randomCustomer;
 import static org.assertj.core.api.Assertions.assertThat;
 

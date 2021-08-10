@@ -4,13 +4,10 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.assertion.Cus
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import java.util.List;
-
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures.randomCustomer;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("ConstantConditions")
 public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
@@ -21,17 +18,11 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
         CustomerRepository customerRepository = getBean(CustomerRepository.class);
         customerRepository.createCustomer(input).block();
 
-        EntityExchangeResult<Customer> response = webTestClient()
-                .get()
-                .uri("/customer/{id}", input.getId().toString())
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectBody(Customer.class)
-                .returnResult();
+        ResponseSpec response = customerApiClient().get(input.getId());
 
-        assertThat(response.getRawStatusCode()).isEqualTo(200);
+        response.expectStatus().isOk();
 
-        Customer result = response.getResponseBody();
+        Customer result = response.expectBody(Customer.class).returnResult().getResponseBody();
         CustomerAssertion.assertEquals(result, input);
     }
 }

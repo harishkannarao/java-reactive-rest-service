@@ -61,8 +61,4 @@ public abstract class AbstractBaseIntegrationTest {
     protected <T> T getBean(Class<T> clazz) {
         return SpringBootTestRunner.getBean(clazz);
     }
-
-    protected WebTestClient webTestClient() {
-        return WebTestClient.bindToServer().baseUrl(SpringBootTestRunner.getApplicationUrl()).build();
-    }
 }
