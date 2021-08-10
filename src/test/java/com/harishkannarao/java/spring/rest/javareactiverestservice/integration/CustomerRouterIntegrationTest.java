@@ -13,30 +13,25 @@ import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixtur
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("ConstantConditions")
-public class CustomerControllerIntegrationTest extends AbstractBaseIntegrationTest {
+public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
 
     @Test
-    void listCustomers() {
-        Customer input1 = randomCustomer();
-        Customer input2 = randomCustomer();
+    void getCustomerById() {
+        Customer input = randomCustomer();
         CustomerRepository customerRepository = getBean(CustomerRepository.class);
-        customerRepository.deleteAllCustomers().block();
-        customerRepository.createCustomer(input1).block();
-        customerRepository.createCustomer(input2).block();
+        customerRepository.createCustomer(input).block();
 
-        EntityExchangeResult<List<Customer>> response = webTestClient()
+        EntityExchangeResult<Customer> response = webTestClient()
                 .get()
-                .uri("/all-customers")
+                .uri("/customer/{id}", input.getId().toString())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectBodyList(Customer.class)
+                .expectBody(Customer.class)
                 .returnResult();
 
         assertThat(response.getRawStatusCode()).isEqualTo(200);
 
-        List<Customer> result = response.getResponseBody();
-        assertThat(result).hasSize(2);
-        CustomerAssertion.assertEquals(result.get(0), input1);
-        CustomerAssertion.assertEquals(result.get(1), input2);
+        Customer result = response.getResponseBody();
+        CustomerAssertion.assertEquals(result, input);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping(path = {"/customer"})
+@RequestMapping(path = {"/all-customers"})
 public class CustomerController {
 
     private final CustomerRepository customerRepository;
