@@ -1,11 +1,11 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.PostgresTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.ShutdownExtension;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
@@ -14,6 +14,11 @@ import java.util.stream.Stream;
 
 @ExtendWith({ShutdownExtension.class})
 public abstract class AbstractBaseIntegrationTest {
+
+    @BeforeEach
+    void globalSetup() {
+        getBean(CustomerRepository.class).deleteAllCustomers().block();
+    }
 
     private List<String> getPostgresTestProperties() {
         return List.of(

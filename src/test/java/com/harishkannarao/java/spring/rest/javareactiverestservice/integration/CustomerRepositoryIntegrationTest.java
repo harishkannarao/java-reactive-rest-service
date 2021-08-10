@@ -23,7 +23,7 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         Customer input2 = randomCustomer();
         CustomerRepository underTest = getBean(CustomerRepository.class);
 
-        underTest.deleteAllCustomers().block();
+        assertThat(underTest.listCustomers().collectList().block()).hasSize(0);
 
         UUID id1 = underTest.createCustomer(input1).block();
         assertThat(id1).isEqualTo(input1.getId());
