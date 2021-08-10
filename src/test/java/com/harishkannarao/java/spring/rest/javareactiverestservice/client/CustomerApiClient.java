@@ -1,8 +1,10 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.client;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.UUID;
 
@@ -17,6 +19,31 @@ public class CustomerApiClient {
         return webTestClient
                 .get()
                 .uri("/customer/{id}", id.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+    }
+
+    public ResponseSpec create(Customer customer) {
+        return webTestClient
+                .post()
+                .uri("/customer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(customer))
+                .exchange();
+    }
+
+    public ResponseSpec getAll() {
+        return webTestClient
+                .get()
+                .uri("/customer")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+    }
+
+    public ResponseSpec deleteAll() {
+        return webTestClient
+                .delete()
+                .uri("/customer")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange();
     }
