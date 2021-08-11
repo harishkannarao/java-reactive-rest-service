@@ -3,18 +3,15 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.assertion.CustomerAssertion;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.response.CreateCustomerResponse;
-import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures.randomCustomer;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("ConstantConditions")
 public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
 
     @Test
@@ -23,26 +20,29 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
 
         Customer input1 = randomCustomer();
         Customer input2 = randomCustomer();
+
         List.of(input1, input2).forEach(customer -> {
-            ResponseSpec createRes = customerApiClient().create(customer);
-            createRes.expectStatus().isOk();
-            UUID createdId = createRes.expectBody(CreateCustomerResponse.class).returnResult().getResponseBody().getId();
-            assertThat(createdId).isEqualTo(customer.getId());
-            ResponseSpec getResponse = customerApiClient().get(customer.getId());
-            getResponse.expectStatus().isOk();
-            CustomerAssertion.assertEquals(getResponse.expectBody(Customer.class).returnResult().getResponseBody(), customer);
+            customerApiClient().create(customer)
+                    .expectStatus().isOk()
+                    .expectBody(CreateCustomerResponse.class)
+                    .value((it) -> assertThat(it.getId()).isEqualTo(customer.getId()));
+            customerApiClient().get(customer.getId())
+                    .expectStatus().isOk()
+                    .expectBody(Customer.class)
+                    .value((it) -> CustomerAssertion.assertEquals(it, customer));
         });
 
-        ResponseSpec getAllRes = customerApiClient().getAll();
-        getAllRes.expectStatus().isOk();
+        customerApiClient().getAll()
+                .expectStatus().isOk()
+                .expectBodyList(Customer.class)
+                .value((it) -> {
+                    assertThat(it).hasSize(2);
+                    CustomerAssertion.assertEquals(it.get(0), input1);
+                    CustomerAssertion.assertEquals(it.get(1), input2);
+                });
 
-        List<Customer> getAllResult = getAllRes.expectBodyList(Customer.class).returnResult().getResponseBody();
-        assertThat(getAllResult).hasSize(2);
-        CustomerAssertion.assertEquals(getAllResult.get(0), input1);
-        CustomerAssertion.assertEquals(getAllResult.get(1), input2);
 
-        ResponseSpec deleteRes = customerApiClient().deleteAll();
-        deleteRes.expectStatus().isOk();
+        customerApiClient().deleteAll().expectStatus().isOk();
 
         customerApiClient().getAll().expectBodyList(Customer.class).hasSize(0);
     }
