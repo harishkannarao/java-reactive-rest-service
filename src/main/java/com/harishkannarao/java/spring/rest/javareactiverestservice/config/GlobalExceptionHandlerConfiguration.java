@@ -22,7 +22,7 @@ public class GlobalExceptionHandlerConfiguration {
     @Order(-2)
     public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
                                                              WebProperties.Resources resources,
-                                                             WebProperties webProperties, ObjectProvider<ViewResolver> viewResolvers,
+                                                             ObjectProvider<ViewResolver> viewResolvers,
                                                              ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext, ServerProperties serverProperties) {
         GlobalErrorWebExceptionHandler exceptionHandler = new GlobalErrorWebExceptionHandler(errorAttributes,
                 resources,
