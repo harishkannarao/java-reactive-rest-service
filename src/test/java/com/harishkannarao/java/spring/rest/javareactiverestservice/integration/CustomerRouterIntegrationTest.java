@@ -3,16 +3,10 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.assertion.CustomerAssertion;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.response.CreateCustomerResponse;
-import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures.randomCustomer;
