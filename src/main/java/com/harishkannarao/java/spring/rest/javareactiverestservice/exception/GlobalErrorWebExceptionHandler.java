@@ -21,16 +21,19 @@ public class GlobalErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
 
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
-        Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
-        Map<String, Object> result = new HashMap<>(errorAttributes);
+        Map<String, Object> originalErrorAttributes = super.getErrorAttributes(request, options);
         Throwable error = getError(request);
+        return transformErrorAttributes(originalErrorAttributes, error);
+    }
+
+    private Map<String, Object> transformErrorAttributes(Map<String, Object> original, Throwable error) {
+        Map<String, Object> transformed = new HashMap<>(original);
         if (error instanceof DataIntegrityViolationException) {
             DataIntegrityViolationException exception = (DataIntegrityViolationException) error;
-            result.put("status", HttpStatus.CONFLICT.value());
-            result.put("error", HttpStatus.CONFLICT.getReasonPhrase());
-            result.put("message", exception.getCause().getMessage());
+            transformed.put("status", HttpStatus.CONFLICT.value());
+            transformed.put("error", HttpStatus.CONFLICT.getReasonPhrase());
+            transformed.put("message", exception.getCause().getMessage());
         }
-
-        return result;
+        return transformed;
     }
 }
