@@ -5,7 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CustomerApiClient {
@@ -45,6 +47,15 @@ public class CustomerApiClient {
                 .delete()
                 .uri("/customer")
                 .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+    }
+
+    public ResponseSpec createMultiple(List<Customer> customers) {
+        return webTestClient
+                .post()
+                .uri("/customer/create-multiple")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromPublisher(Flux.fromIterable(customers), Customer.class))
                 .exchange();
     }
 }

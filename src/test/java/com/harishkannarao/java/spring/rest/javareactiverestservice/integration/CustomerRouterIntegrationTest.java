@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures.randomCustomer;
@@ -46,6 +49,32 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
         customerApiClient().deleteAll().expectStatus().isOk();
 
         customerApiClient().getAll().expectBodyList(Customer.class).hasSize(0);
+    }
+
+    @Test
+    void createMultipleCustomers() {
+        customerApiClient().getAll().expectBodyList(Customer.class).hasSize(0);
+
+        Customer input1 = randomCustomer();
+        Customer input2 = randomCustomer();
+        List<Customer> customerList = List.of(input1, input2);
+
+        customerApiClient().createMultiple(customerList)
+                .expectStatus().isOk()
+                .expectBodyList(CreateCustomerResponse.class)
+                .value(it -> {
+                    List<UUID> createdIds = it.stream().map(CreateCustomerResponse::getId).collect(Collectors.toList());
+                    assertThat(createdIds).containsExactlyInAnyOrder(input1.getId(), input2.getId());
+                });
+
+        customerApiClient().getAll()
+                .expectBodyList(Customer.class)
+                .value((list) -> {
+                    assertThat(list).hasSize(2);
+                    Map<UUID, Customer> customerMap = list.stream().collect(Collectors.toMap(Customer::getId, it -> it));
+                    CustomerAssertion.assertEquals(customerMap.get(input1.getId()), input1);
+                    CustomerAssertion.assertEquals(customerMap.get(input2.getId()), input2);
+                });
     }
 
     @Test

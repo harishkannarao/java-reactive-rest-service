@@ -25,6 +25,11 @@ public class CustomerRouter {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> createMultipleCustomersRoute(CustomerHandler handler) {
+        return route(POST("/customer/create-multiple").and(accept(MediaType.APPLICATION_JSON)), handler::createMultipleCustomers);
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> getAllCustomersRoute(CustomerHandler handler) {
         return route(GET("/customer").and(accept(MediaType.APPLICATION_JSON)), handler::getAllCustomers);
     }

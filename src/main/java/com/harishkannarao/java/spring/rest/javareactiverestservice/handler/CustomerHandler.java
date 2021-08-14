@@ -5,8 +5,6 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.respons
 import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyExtractors;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
@@ -35,6 +33,13 @@ public class CustomerHandler {
         Mono<UUID> uuidMono = customerMono.flatMap(customerRepository::createCustomer);
         Mono<CreateCustomerResponse> createCustomerResponseMono = uuidMono.map(CreateCustomerResponse::new);
         return ServerResponse.ok().body(createCustomerResponseMono, CreateCustomerResponse.class);
+    }
+
+    public Mono<ServerResponse> createMultipleCustomers(ServerRequest request) {
+        Flux<Customer> customerFlux = request.bodyToFlux(Customer.class);
+        Flux<UUID> uuidFlux = customerFlux.flatMap(customerRepository::createCustomer);
+        Flux<CreateCustomerResponse> result = uuidFlux.map(CreateCustomerResponse::new);
+        return ServerResponse.ok().body(result, CreateCustomerResponse.class);
     }
 
     public Mono<ServerResponse> getAllCustomers(ServerRequest request) {
