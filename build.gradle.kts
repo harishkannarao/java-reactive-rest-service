@@ -44,8 +44,7 @@ allprojects {
 	tasks.withType<Test> {
 		useJUnitPlatform()
 		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
-		val finalSystemProperties = commandLineProperties + mapOf(Pair("reactor.netty.http.server.accessLogEnabled", "true"))
-		systemProperties(finalSystemProperties)
+		systemProperties(commandLineProperties)
 	}
 
 	tasks.withType<Jar> {
@@ -58,8 +57,7 @@ allprojects {
 		classpath = sourceSets["test"].runtimeClasspath
 		args(emptyList<String>())
 		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
-		val finalSystemProperties = commandLineProperties + mapOf(Pair("reactor.netty.http.server.accessLogEnabled", "true"))
-		systemProperties(finalSystemProperties)
+		systemProperties(commandLineProperties)
 		dependsOn(tasks["compileJava"], tasks["compileTestJava"])
 	}
 }
