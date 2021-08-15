@@ -18,9 +18,13 @@ public class CustomerApiClient {
     }
 
     public ResponseSpec get(UUID id) {
+        return get(id.toString());
+    }
+
+    public ResponseSpec get(String id) {
         return webTestClient
                 .get()
-                .uri("/customer/{id}", id.toString())
+                .uri("/customer/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange();
     }

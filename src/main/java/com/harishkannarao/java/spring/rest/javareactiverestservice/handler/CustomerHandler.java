@@ -4,9 +4,12 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Custome
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.response.CreateCustomerResponse;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -23,8 +26,20 @@ public class CustomerHandler {
     }
 
     public Mono<ServerResponse> getCustomerById(ServerRequest request) {
-        UUID customerId = UUID.fromString(request.pathVariable("id"));
-        Mono<Customer> customer = customerRepository.getCustomer(customerId);
+        UUID customerId;
+        try {
+            customerId = UUID.fromString(request.pathVariable("id"));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        Mono<Customer> customer = customerRepository.getCustomer(customerId)
+                .transform(it -> it.hasElement().flatMap(result -> {
+                    if (result) {
+                        return it;
+                    } else {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+                    }
+                }));
         return ServerResponse.ok().body(customer, Customer.class);
     }
 

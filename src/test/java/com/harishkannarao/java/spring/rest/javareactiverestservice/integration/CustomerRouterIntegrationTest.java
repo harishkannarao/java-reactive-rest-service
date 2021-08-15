@@ -78,6 +78,18 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
     }
 
     @Test
+    void returnNotFoundWhenGivenIdDoesNotExist() {
+        customerApiClient().get(UUID.randomUUID())
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void returnBadRequestWhenGivenIdIsNotValid() {
+        customerApiClient().get("junk-uuid")
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
     void cannotCreateMultipleCustomersWithSameId() {
         Customer input = randomCustomer();
 
