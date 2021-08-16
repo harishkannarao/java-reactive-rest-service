@@ -64,6 +64,6 @@ public class CustomerHandler {
 
     public Mono<ServerResponse> deleteAllCustomers(ServerRequest request) {
         Mono<Void> response = customerRepository.deleteAllCustomers().then();
-        return ServerResponse.ok().body(response, Void.class);
+        return ServerResponse.noContent().build(response);
     }
 }

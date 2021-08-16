@@ -46,7 +46,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
                 });
 
 
-        customerApiClient().deleteAll().expectStatus().isOk();
+        customerApiClient().deleteAll().expectStatus().isNoContent();
 
         customerApiClient().getAll().expectBodyList(Customer.class).hasSize(0);
     }
