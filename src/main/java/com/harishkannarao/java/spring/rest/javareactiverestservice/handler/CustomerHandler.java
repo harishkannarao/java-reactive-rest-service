@@ -42,14 +42,14 @@ public class CustomerHandler {
 
     public Mono<ServerResponse> createCustomer(ServerRequest request) {
         Mono<Customer> customerMono = request.bodyToMono(Customer.class);
-        Mono<UUID> uuidMono = customerMono.flatMap(customerRepository::createCustomer);
+        Mono<UUID> uuidMono = customerMono.map(customerRepository::createCustomer).flatMap(it -> it);
         Mono<CreateCustomerResponse> createCustomerResponseMono = uuidMono.map(CreateCustomerResponse::new);
         return ServerResponse.ok().body(createCustomerResponseMono, CreateCustomerResponse.class);
     }
 
     public Mono<ServerResponse> createMultipleCustomers(ServerRequest request) {
         Flux<Customer> customerFlux = request.bodyToFlux(Customer.class);
-        Flux<UUID> uuidFlux = customerFlux.flatMap(customerRepository::createCustomer);
+        Flux<UUID> uuidFlux = customerFlux.map(customerRepository::createCustomer).flatMap(it -> it);
         Flux<CreateCustomerResponse> result = uuidFlux.map(CreateCustomerResponse::new);
         return ServerResponse.ok().body(result, CreateCustomerResponse.class);
     }
