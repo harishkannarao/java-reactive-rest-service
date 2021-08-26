@@ -1,5 +1,6 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.MockServerTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.PostgresTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.ShutdownExtension;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner;
@@ -17,6 +18,16 @@ public abstract class AbstractBaseIntegrationTest {
 
     @BeforeEach
     void globalSetup() {
+        if (!PostgresTestRunner.isRunning()) {
+            PostgresTestRunner.start();
+        }
+        if (!MockServerTestRunner.isRunning()) {
+            MockServerTestRunner.start();
+        }
+        if (!SpringBootTestRunner.isRunning()) {
+            SpringBootTestRunner.start(getIntegrationTestProperties());
+        }
+
         customerApiClient().deleteAll().expectStatus().isNoContent();
     }
 
@@ -46,16 +57,6 @@ public abstract class AbstractBaseIntegrationTest {
                         getSpringTestProperties().stream()
                 )
                 .collect(Collectors.toList());
-    }
-
-    @BeforeEach
-    public void resetApplication() {
-        if (!PostgresTestRunner.isRunning()) {
-            PostgresTestRunner.start();
-        }
-        if (!SpringBootTestRunner.isRunning()) {
-            SpringBootTestRunner.start(getIntegrationTestProperties());
-        }
     }
 
     protected <T> T getBean(Class<T> clazz) {

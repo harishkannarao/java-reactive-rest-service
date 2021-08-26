@@ -28,6 +28,13 @@ public class ShutdownExtension implements BeforeAllCallback, ExtensionContext.St
                 e.printStackTrace();
             }
         }
+        if (MockServerTestRunner.isRunning()) {
+            try {
+                MockServerTestRunner.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (PostgresTestRunner.isRunning()) {
             try {
                 PostgresTestRunner.stop();

@@ -15,6 +15,7 @@ public class LocalRunnerWithFixtures {
 
     public static void main(String[] args) {
         PostgresTestRunner.start();
+        MockServerTestRunner.start();
 
         List<String> finalArgs = Stream.of(
                         getPostgresTestProperties(),

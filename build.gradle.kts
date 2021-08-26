@@ -14,6 +14,7 @@ val flywayVersion: String by project
 val testContainersVersion: String by project
 val logstashLogbackEncoderVersion: String by project
 val springdocOpenApiVersion: String by project
+val mockServerClientVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
 version = ""
@@ -42,6 +43,8 @@ allprojects {
 		testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testImplementation("io.projectreactor:reactor-test:$reactorTestVersion")
 		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
+		testImplementation("org.testcontainers:mockserver:$testContainersVersion")
+		testImplementation("org.mock-server:mockserver-client-java:$mockServerClientVersion")
 	}
 
 	tasks.withType<Test> {
