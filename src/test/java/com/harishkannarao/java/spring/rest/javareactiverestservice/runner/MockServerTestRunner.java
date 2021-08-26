@@ -6,7 +6,12 @@ import org.testcontainers.utility.DockerImageName;
 
 public class MockServerTestRunner {
 
-    private static final MockServerContainer CONTAINER = new MockServerContainer(DockerImageName.parse("mockserver/mockserver:mockserver-5.11.2"));
+    private static final MockServerContainer CONTAINER = new MockServerContainer(DockerImageName.parse("mockserver/mockserver:mockserver-5.11.2"))
+            .withEnv("MOCKSERVER_MAX_EXPECTATIONS", "300")
+            .withEnv("MOCKSERVER_MAX_LOG_ENTRIES", "300")
+            .withEnv("MOCKSERVER_MAX_WEB_SOCKET_EXPECTATIONS", "300")
+            .withEnv("MOCKSERVER_LOG_LEVEL", "INFO")
+            .withEnv("MOCKSERVER_DISABLE_SYSTEM_OUT", "false");
 
     public static void start() {
         CONTAINER.start();

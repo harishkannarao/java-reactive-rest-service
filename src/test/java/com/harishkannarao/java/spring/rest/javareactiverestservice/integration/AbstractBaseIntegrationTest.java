@@ -28,6 +28,7 @@ public abstract class AbstractBaseIntegrationTest {
             SpringBootTestRunner.start(getIntegrationTestProperties());
         }
 
+        MockServerTestRunner.getClient().reset();
         customerApiClient().deleteAll().expectStatus().isNoContent();
     }
 
