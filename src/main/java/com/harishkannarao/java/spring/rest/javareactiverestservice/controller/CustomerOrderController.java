@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,7 +31,7 @@ public class CustomerOrderController {
     public ResponseEntity<Flux<Order>> customerOrders(@PathVariable("customerId") UUID customerId) {
         Flux<Order> result = customerRepository.getCustomer(customerId)
                 .transform(it -> MonoTransformers.errorOnEmpty(it, () -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                .map(it -> orderClient.getCustomerOrders(it.getId())).flux()
+                .map(it -> orderClient.getOrders(Optional.of(it.getId()))).flux()
                 .flatMap(it -> it);
         return ResponseEntity.ok().body(result);
     }

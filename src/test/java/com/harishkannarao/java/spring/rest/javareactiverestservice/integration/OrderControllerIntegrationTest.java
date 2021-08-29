@@ -6,6 +6,8 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Custome
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import org.junit.jupiter.api.Test;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.RequestDefinition;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubCustomerOrders(200, jsonUtil().toJson(orders), customer.getId().toString());
+                .stubOrders(200, jsonUtil().toJson(orders));
 
         customerApiClient()
                 .create(customer);
@@ -41,6 +43,11 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                     assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
                     assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
                 });
+
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
+        assertThat(orderRequests).hasSize(1);
+        assertThat(((HttpRequest) orderRequests[0]).getFirstQueryStringParameter("customer"))
+                .contains(customer.getId().toString());
     }
 
     @Test
@@ -48,5 +55,8 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         customerOrderApiClient()
                 .get(UUID.randomUUID().toString())
                 .expectStatus().isNotFound();
+
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
+        assertThat(orderRequests).hasSize(0);
     }
 }
