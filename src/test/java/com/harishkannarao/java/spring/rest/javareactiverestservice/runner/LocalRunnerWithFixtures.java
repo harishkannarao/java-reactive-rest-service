@@ -19,6 +19,7 @@ public class LocalRunnerWithFixtures {
 
         List<String> finalArgs = Stream.of(
                         getPostgresTestProperties(),
+                        getMockServerTestProperties(),
                         getSpringTestProperties(),
                         Arrays.asList(args)
                 ).flatMap(Collection::stream)
@@ -48,6 +49,11 @@ public class LocalRunnerWithFixtures {
         );
     }
 
+    private static List<String> getMockServerTestProperties() {
+        return List.of(
+                "--order-service.base-url=" + MockServerTestRunner.getUrl()
+        );
+    }
 
     private static List<String> getSpringTestProperties() {
         return List.of(

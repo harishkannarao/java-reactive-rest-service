@@ -7,6 +7,7 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.Spring
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +46,12 @@ public abstract class AbstractBaseIntegrationTest {
         );
     }
 
+    private List<String> getMockServerTestProperties() {
+        return List.of(
+                "--order-service.base-url=" + MockServerTestRunner.getUrl()
+        );
+    }
+
     private List<String> getSpringTestProperties() {
         return List.of(
                 "--spring.profiles.active=int-test",
@@ -53,10 +60,11 @@ public abstract class AbstractBaseIntegrationTest {
     }
 
     private List<String> getIntegrationTestProperties() {
-        return Stream.concat(
-                        getPostgresTestProperties().stream(),
-                        getSpringTestProperties().stream()
-                )
+        return Stream.of(
+                        getPostgresTestProperties(),
+                        getMockServerTestProperties(),
+                        getSpringTestProperties()
+                ).flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
