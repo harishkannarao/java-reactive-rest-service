@@ -1,6 +1,5 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
-import com.harishkannarao.java.spring.rest.javareactiverestservice.client.OrderClient;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.OrderFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
@@ -13,14 +12,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerOrderApiClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("ConstantConditions")
-public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
-
-    private OrderClient underTest() {
-        return getBean(OrderClient.class);
-    }
+public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest {
 
     @Test
     void getCustomerOrders() {
@@ -32,12 +27,15 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Stubs.orderServiceStub()
                 .stubCustomerOrders(200, jsonUtil().toJson(orders), customer.getId().toString());
 
-        List<Order> result = underTest().getCustomerOrders(customer.getId()).collectList().block();
-
-        assertThat(result).hasSize(2);
-        Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
-        assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
-        assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+        customerOrderApiClient()
+                .get(customer.getId().toString())
+                .expectStatus().isOk()
+                .expectBodyList(Order.class)
+                .hasSize(2)
+                .value(result -> {
+                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
+                    assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
+                    assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+                });
     }
-
 }
