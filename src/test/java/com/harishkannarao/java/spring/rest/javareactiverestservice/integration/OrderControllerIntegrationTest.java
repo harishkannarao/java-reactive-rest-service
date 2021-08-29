@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerOrderApiClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +28,9 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         Stubs.orderServiceStub()
                 .stubCustomerOrders(200, jsonUtil().toJson(orders), customer.getId().toString());
 
+        customerApiClient()
+                .create(customer);
+
         customerOrderApiClient()
                 .get(customer.getId().toString())
                 .expectStatus().isOk()
@@ -37,5 +41,12 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                     assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
                     assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
                 });
+    }
+
+    @Test
+    void getCustomerOrders_returns404_whenCustomerDoNotExist() {
+        customerOrderApiClient()
+                .get(UUID.randomUUID().toString())
+                .expectStatus().isNotFound();
     }
 }
