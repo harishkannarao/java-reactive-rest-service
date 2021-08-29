@@ -1,5 +1,6 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.json.JsonUtil;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.MockServerTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.PostgresTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.ShutdownExtension;
@@ -70,5 +71,9 @@ public abstract class AbstractBaseIntegrationTest {
 
     protected <T> T getBean(Class<T> clazz) {
         return SpringBootTestRunner.getBean(clazz);
+    }
+
+    protected JsonUtil jsonUtil() {
+        return getBean(JsonUtil.class);
     }
 }
