@@ -11,6 +11,7 @@ import org.mockserver.model.RequestDefinition;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubOrders(200, jsonUtil().toJson(orders));
+                .stubOrders(200, jsonUtil().toJson(orders), Optional.of(customer.getId().toString()));
 
         customerApiClient()
                 .create(customer);
@@ -43,11 +44,6 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                     assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
                     assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
                 });
-
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
-        assertThat(orderRequests).hasSize(1);
-        assertThat(((HttpRequest) orderRequests[0]).getFirstQueryStringParameter("customer"))
-                .contains(customer.getId().toString());
     }
 
     @Test

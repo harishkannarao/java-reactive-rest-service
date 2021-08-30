@@ -8,12 +8,13 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import org.junit.jupiter.api.Test;
 import org.mockserver.model.HttpRequest;
-import org.mockserver.model.LogEventRequestAndResponse;
 import org.mockserver.model.RequestDefinition;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +33,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubOrders(200, jsonUtil().toJson(orders));
+                .stubOrders(200, jsonUtil().toJson(orders), Optional.of(customer.getId().toString()));
 
         List<Order> result = underTest().getOrders(Optional.of(customer.getId())).collectList().block();
 
@@ -40,11 +41,6 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
         assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
         assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
-
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
-        assertThat(orderRequests).hasSize(1);
-        assertThat(((HttpRequest) orderRequests[0]).getFirstQueryStringParameter("customer"))
-                .contains(customer.getId().toString());
     }
 
     @Test
