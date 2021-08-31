@@ -19,11 +19,15 @@ public class OrderServiceStub {
         this.mockServerClient = mockServerClient;
     }
 
-    public void stubOrders(int status, String responseBody, Optional<String> customerId) {
+    public void stubOrders(int status,
+                           String responseBody,
+                           Optional<String> customerId,
+                           Optional<Integer> limit) {
         HttpRequest httpRequest = request()
                 .withMethod("GET")
                 .withPath("/order");
         customerId.ifPresent(it -> httpRequest.withQueryStringParameter("customer", it));
+        limit.ifPresent(it -> httpRequest.withQueryStringParameter("limit", it.toString()));
         HttpResponse httpResponse = response()
                 .withStatusCode(status)
                 .withBody(responseBody, MediaType.APPLICATION_JSON);
@@ -32,7 +36,7 @@ public class OrderServiceStub {
     }
 
     public void stubOrders(int status, String responseBody) {
-        stubOrders(status, responseBody, Optional.empty());
+        stubOrders(status, responseBody, Optional.empty(), Optional.empty());
     }
 
     public RequestDefinition[] getOrderRequests() {

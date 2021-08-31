@@ -24,7 +24,7 @@ public class OrderClient {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public Flux<Order> getOrders(Optional<UUID> customerId) {
+    public Flux<Order> getOrders(Optional<UUID> customerId, Optional<Integer> limit) {
         return webClient.get()
                 .uri(uriBuilder -> {
                             UriBuilder builder = uriBuilder
@@ -33,6 +33,10 @@ public class OrderClient {
                             customerId.ifPresent(it -> {
                                 builder.queryParam("customer", "{customerId}");
                                 variables.put("customerId", it.toString());
+                            });
+                            limit.ifPresent(it -> {
+                                builder.queryParam("limit", "{limit}");
+                                variables.put("limit", it.toString());
                             });
                             return builder.build(variables);
                         }

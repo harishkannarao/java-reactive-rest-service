@@ -31,7 +31,7 @@ public class CustomerOrderController {
     public ResponseEntity<Flux<Order>> customerOrders(@PathVariable("customerId") UUID customerId) {
         Flux<Order> result = customerRepository.getCustomer(customerId)
                 .transform(it -> MonoTransformers.errorOnEmpty(it, () -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                .map(it -> orderClient.getOrders(Optional.of(it.getId()))).flux()
+                .map(it -> orderClient.getOrders(Optional.of(it.getId()), Optional.empty())).flux()
                 .flatMap(it -> it);
         return ResponseEntity.ok().body(result);
     }

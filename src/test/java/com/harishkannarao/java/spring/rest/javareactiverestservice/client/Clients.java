@@ -16,4 +16,8 @@ public class Clients {
     public static CustomerOrderApiClient customerOrderApiClient() {
         return new CustomerOrderApiClient(webTestClient());
     }
+
+    public static OrderApiClient orderApiClient() {
+        return new OrderApiClient(webTestClient());
+    }
 }
