@@ -1,7 +1,9 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.client;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.Optional;
 
@@ -26,5 +28,15 @@ public class OrderApiClient {
 
     public WebTestClient.ResponseSpec get() {
         return get(Optional.empty());
+    }
+
+    public WebTestClient.ResponseSpec create(Order order) {
+        return webTestClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/order").build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(order))
+                .exchange();
     }
 }

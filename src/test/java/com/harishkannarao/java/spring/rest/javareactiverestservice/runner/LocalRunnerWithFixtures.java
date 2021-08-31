@@ -1,11 +1,16 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.runner;
 
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures;
+import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.OrderFixtures;
+import com.harishkannarao.java.spring.rest.javareactiverestservice.json.JsonUtil;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
+import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
+import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,14 +31,33 @@ public class LocalRunnerWithFixtures {
                 .collect(Collectors.toList());
         SpringBootTestRunner.start(finalArgs);
 
-        createCustomerFixtures();
+        createFixtures();
     }
 
-    private static void createCustomerFixtures() {
+    private static void createFixtures() {
+        JsonUtil jsonUtil = SpringBootTestRunner.getBean(JsonUtil.class);
         Customer customer1 = CustomerFixtures.randomCustomer();
         Customer customer2 = CustomerFixtures.randomCustomer();
-        customerApiClient().createMultiple(List.of(customer1, customer2))
+        List<Customer> customers = List.of(customer1, customer2);
+        customerApiClient().createMultiple(customers)
                         .expectStatus().isOk();
+
+        Order order1 = OrderFixtures.randomOrder();
+        Order order2 = OrderFixtures.randomOrder();
+        List<Order> orders = List.of(order1, order2);
+        Integer limit = 10;
+
+        customers.forEach(it -> Stubs.orderServiceStub()
+                .stubGetOrders(200,
+                        jsonUtil.toJson(orders),
+                        Optional.of(it.getId().toString()),
+                        Optional.of(limit)));
+
+        Stubs.orderServiceStub()
+                .stubGetOrders(200, jsonUtil.toJson(orders));
+
+        Stubs.orderServiceStub()
+                .stubCreateOrder(204);
     }
 
     private static List<String> getPostgresTestProperties() {

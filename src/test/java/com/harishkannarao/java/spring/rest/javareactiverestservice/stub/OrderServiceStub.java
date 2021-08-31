@@ -19,10 +19,10 @@ public class OrderServiceStub {
         this.mockServerClient = mockServerClient;
     }
 
-    public void stubOrders(int status,
-                           String responseBody,
-                           Optional<String> customerId,
-                           Optional<Integer> limit) {
+    public void stubGetOrders(int status,
+                              String responseBody,
+                              Optional<String> customerId,
+                              Optional<Integer> limit) {
         HttpRequest httpRequest = request()
                 .withMethod("GET")
                 .withPath("/order");
@@ -35,14 +35,34 @@ public class OrderServiceStub {
                 .respond(httpResponse);
     }
 
-    public void stubOrders(int status, String responseBody) {
-        stubOrders(status, responseBody, Optional.empty(), Optional.empty());
+    public void stubGetOrders(int status, String responseBody) {
+        stubGetOrders(status, responseBody, Optional.empty(), Optional.empty());
     }
 
-    public RequestDefinition[] getOrderRequests() {
+    public RequestDefinition[] retrieveGetOrderRequests() {
         return mockServerClient.retrieveRecordedRequests(
                 request()
                         .withMethod("GET")
+                        .withPath("/order")
+        );
+    }
+
+    public void stubCreateOrder(int status) {
+        mockServerClient.when(
+                        request()
+                                .withMethod("POST")
+                                .withPath("/order")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(status)
+                );
+    }
+
+    public RequestDefinition[] retrieveCreateOrderRequests() {
+        return mockServerClient.retrieveRecordedRequests(
+                request()
+                        .withMethod("POST")
                         .withPath("/order")
         );
     }

@@ -1,9 +1,12 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.client.OrderApiClient;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.OrderFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import org.junit.jupiter.api.Test;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.RequestDefinition;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +26,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         List<Order> orders = List.of(order1, order2);
 
         Stubs.orderServiceStub()
-                .stubOrders(200, jsonUtil().toJson(orders), Optional.empty(), Optional.empty());
+                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.empty(), Optional.empty());
 
         orderApiClient()
                 .get()
@@ -44,7 +47,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         List<Order> orders = List.of(order1, order2);
 
         Stubs.orderServiceStub()
-                .stubOrders(200, jsonUtil().toJson(orders), Optional.empty(), Optional.of(10));
+                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.empty(), Optional.of(10));
 
         orderApiClient()
                 .get(Optional.of(10))
@@ -56,5 +59,22 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                     assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
                     assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
                 });
+    }
+
+    @Test
+    void createOrder() {
+        Order order = OrderFixtures.randomOrder();
+
+        Stubs.orderServiceStub()
+                .stubCreateOrder(204);
+
+        orderApiClient()
+                .create(order)
+                .expectStatus().isNoContent();
+
+        RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();
+        assertThat(createOrderRequests).hasSize(1);
+        Order receivedOrder = jsonUtil().fromJson(((HttpRequest) createOrderRequests[0]).getBodyAsJsonOrXmlString(), Order.class);
+        assertThat(receivedOrder).usingRecursiveComparison().isEqualTo(order);
     }
 }

@@ -28,7 +28,7 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubOrders(200,
+                .stubGetOrders(200,
                         jsonUtil().toJson(orders),
                         Optional.of(customer.getId().toString()),
                         Optional.empty());
@@ -54,7 +54,7 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
                 .get(UUID.randomUUID().toString())
                 .expectStatus().isNotFound();
 
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetOrderRequests();
         assertThat(orderRequests).hasSize(0);
     }
 }

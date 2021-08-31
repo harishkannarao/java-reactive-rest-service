@@ -34,7 +34,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Integer limit = 10;
 
         Stubs.orderServiceStub()
-                .stubOrders(200,
+                .stubGetOrders(200,
                         jsonUtil().toJson(orders),
                         Optional.of(customer.getId().toString()),
                         Optional.of(limit));
@@ -54,7 +54,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         List<Order> orders = List.of(order1, order2);
 
         Stubs.orderServiceStub()
-                .stubOrders(200, jsonUtil().toJson(orders));
+                .stubGetOrders(200, jsonUtil().toJson(orders));
 
         List<Order> result = underTest().getOrders(Optional.empty(), Optional.empty()).collectList().block();
 
@@ -63,9 +63,26 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
         assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
 
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().getOrderRequests();
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetOrderRequests();
         assertThat(orderRequests).hasSize(1);
         assertThat(((HttpRequest) orderRequests[0]).getQueryStringParameters()).isNull();
+    }
+
+    @Test
+    void createOrder() {
+        Order order = OrderFixtures.randomOrder();
+
+        Stubs.orderServiceStub()
+                .stubCreateOrder(204);
+
+        underTest()
+                .createOrder(order)
+                .block();
+
+        RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();
+        assertThat(createOrderRequests).hasSize(1);
+        Order receivedOrder = jsonUtil().fromJson(((HttpRequest) createOrderRequests[0]).getBodyAsJsonOrXmlString(), Order.class);
+        assertThat(receivedOrder).usingRecursiveComparison().isEqualTo(order);
     }
 
 }

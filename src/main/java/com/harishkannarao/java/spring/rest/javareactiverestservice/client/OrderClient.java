@@ -3,10 +3,13 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.client;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,5 +46,15 @@ public class OrderClient {
                 )
                 .retrieve()
                 .bodyToFlux(Order.class);
+    }
+
+    public Mono<Void> createOrder(Order order) {
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/order").build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(order))
+                .retrieve()
+                .bodyToMono(Void.class);
     }
 }
