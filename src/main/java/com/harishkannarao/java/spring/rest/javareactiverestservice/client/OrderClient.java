@@ -22,8 +22,10 @@ public class OrderClient {
     private final WebClient webClient;
 
     @Autowired
-    public OrderClient(@Value("${order-service.base-url}") String orderServiceBaseUrl) {
-        this.webClient = WebClient.builder().baseUrl(orderServiceBaseUrl).build();
+    public OrderClient(
+            WebClient.Builder webClientBuilder,
+            @Value("${order-service.base-url}") String orderServiceBaseUrl) {
+        this.webClient = webClientBuilder.baseUrl(orderServiceBaseUrl).build();
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
