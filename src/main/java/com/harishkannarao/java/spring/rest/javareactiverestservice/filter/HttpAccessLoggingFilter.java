@@ -14,11 +14,11 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 import static net.logstash.logback.argument.StructuredArguments.fields;
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
+@SuppressWarnings("NullableProblems")
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class HttpAccessLoggingFilter implements WebFilter {

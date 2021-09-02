@@ -1,5 +1,6 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.client;
 
+import com.harishkannarao.java.spring.rest.javareactiverestservice.filter.WebClientLoggingFilter;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +25,12 @@ public class OrderClient {
     @Autowired
     public OrderClient(
             WebClient.Builder webClientBuilder,
+            WebClientLoggingFilter webClientLoggingFilter,
             @Value("${order-service.base-url}") String orderServiceBaseUrl) {
-        this.webClient = webClientBuilder.baseUrl(orderServiceBaseUrl).build();
+        this.webClient = webClientBuilder
+                .baseUrl(orderServiceBaseUrl)
+                .filter(webClientLoggingFilter)
+                .build();
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
