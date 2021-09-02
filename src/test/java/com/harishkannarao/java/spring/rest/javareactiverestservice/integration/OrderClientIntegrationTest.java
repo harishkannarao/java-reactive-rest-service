@@ -39,7 +39,9 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
                         Optional.of(customer.getId().toString()),
                         Optional.of(limit));
 
-        List<Order> result = underTest().getOrders(Optional.of(customer.getId()), Optional.of(limit)).collectList().block();
+        List<Order> result = underTest()
+                .getOrders(Optional.of(customer.getId()), Optional.of(limit), UUID.randomUUID().toString())
+                .collectList().block();
 
         assertThat(result).hasSize(2);
         Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
@@ -56,7 +58,9 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Stubs.orderServiceStub()
                 .stubGetOrders(200, jsonUtil().toJson(orders));
 
-        List<Order> result = underTest().getOrders(Optional.empty(), Optional.empty()).collectList().block();
+        List<Order> result = underTest()
+                .getOrders(Optional.empty(), Optional.empty(), UUID.randomUUID().toString())
+                .collectList().block();
 
         assertThat(result).hasSize(2);
         Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
@@ -76,7 +80,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
                 .stubCreateOrder(204);
 
         underTest()
-                .createOrder(order)
+                .createOrder(order, UUID.randomUUID().toString())
                 .block();
 
         RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();

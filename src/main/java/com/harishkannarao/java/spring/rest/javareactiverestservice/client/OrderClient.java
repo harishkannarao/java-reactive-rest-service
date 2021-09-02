@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.filter.WebClientLoggingFilter.REQUEST_ID;
+
 @Component
 public class OrderClient {
 
@@ -34,7 +36,7 @@ public class OrderClient {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public Flux<Order> getOrders(Optional<UUID> customerId, Optional<Integer> limit) {
+    public Flux<Order> getOrders(Optional<UUID> customerId, Optional<Integer> limit, String requestId) {
         return webClient.get()
                 .uri(uriBuilder -> {
                             UriBuilder builder = uriBuilder
@@ -51,13 +53,15 @@ public class OrderClient {
                             return builder.build(variables);
                         }
                 )
+                .attribute(REQUEST_ID, requestId)
                 .retrieve()
                 .bodyToFlux(Order.class);
     }
 
-    public Mono<Void> createOrder(Order order) {
+    public Mono<Void> createOrder(Order order, String requestId) {
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/order").build())
+                .attribute(REQUEST_ID, requestId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(order))
