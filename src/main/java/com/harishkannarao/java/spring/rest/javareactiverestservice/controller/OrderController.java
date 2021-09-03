@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @PostMapping(path = {"/order"})
-    public ResponseEntity<Mono<Void>> createOrder(@RequestBody Order order, ServerWebExchange serverWebExchange) {
+    public ResponseEntity<Mono<Void>> createOrder(@RequestBody Mono<Order> order, ServerWebExchange serverWebExchange) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(
                         orderClient.createOrder(order, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.RequestDefinition;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
                 .stubCreateOrder(204);
 
         underTest()
-                .createOrder(order, UUID.randomUUID().toString())
+                .createOrder(Mono.just(order), UUID.randomUUID().toString())
                 .block();
 
         RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();

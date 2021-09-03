@@ -58,13 +58,13 @@ public class OrderClient {
                 .bodyToFlux(Order.class);
     }
 
-    public Mono<Void> createOrder(Order order, String requestId) {
+    public Mono<Void> createOrder(Mono<Order> order, String requestId) {
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/order").build())
                 .attribute(REQUEST_ID, requestId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(order))
+                .body(BodyInserters.fromProducer(order, Order.class))
                 .retrieve()
                 .bodyToMono(Void.class);
     }
