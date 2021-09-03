@@ -1,6 +1,5 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
-import com.harishkannarao.java.spring.rest.javareactiverestservice.client.OrderApiClient;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.OrderFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
@@ -8,10 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.RequestDefinition;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.orderApiClient;
@@ -76,5 +72,25 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         assertThat(createOrderRequests).hasSize(1);
         Order receivedOrder = jsonUtil().fromJson(((HttpRequest) createOrderRequests[0]).getBodyAsJsonOrXmlString(), Order.class);
         assertThat(receivedOrder).usingRecursiveComparison().isEqualTo(order);
+    }
+
+    @Test
+    void deleteOrders() {
+        Order order1 = OrderFixtures.randomOrder();
+        Order order2 = OrderFixtures.randomOrder();
+
+        Stubs.orderServiceStub()
+                .stubDeleteOrders(204);
+
+        orderApiClient()
+                .delete(List.of(order1, order2))
+                .expectStatus().isNoContent();
+
+        RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
+        assertThat(deleteOrdersRequests).hasSize(1);
+        Order[] receivedOrders = jsonUtil().fromJson(((HttpRequest) deleteOrdersRequests[0]).getBodyAsJsonOrXmlString(), Order[].class);
+        Map<UUID, Order> mappedReceivedOrders = Arrays.stream(receivedOrders).collect(Collectors.toMap(Order::getId, it -> it));
+        assertThat(mappedReceivedOrders.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
+        assertThat(mappedReceivedOrders.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
     }
 }

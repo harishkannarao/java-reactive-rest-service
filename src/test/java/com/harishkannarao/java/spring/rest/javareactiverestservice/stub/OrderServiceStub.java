@@ -66,4 +66,24 @@ public class OrderServiceStub {
                         .withPath("/order")
         );
     }
+
+    public void stubDeleteOrders(int status) {
+        mockServerClient.when(
+                        request()
+                                .withMethod("POST")
+                                .withPath("/order/delete")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(status)
+                );
+    }
+
+    public RequestDefinition[] retrieveDeleteOrdersRequests() {
+        return mockServerClient.retrieveRecordedRequests(
+                request()
+                        .withMethod("POST")
+                        .withPath("/order/delete")
+        );
+    }
 }

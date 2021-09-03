@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
+@SuppressWarnings("unused")
 @RestController
 public class OrderController {
     private final OrderClient orderClient;
@@ -41,5 +42,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(
                         orderClient.createOrder(order, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
+    }
+
+    @PostMapping(path = {"/order/delete"})
+    public ResponseEntity<Mono<Void>> deleteOrders(@RequestBody Flux<Order> orders, ServerWebExchange serverWebExchange) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(
+                        orderClient.deleteOrders(orders, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
     }
 }

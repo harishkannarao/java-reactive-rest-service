@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -37,6 +38,16 @@ public class OrderApiClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(order))
+                .exchange();
+    }
+
+    public WebTestClient.ResponseSpec delete(List<Order> orders) {
+        return webTestClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/order/delete").build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(orders))
                 .exchange();
     }
 }

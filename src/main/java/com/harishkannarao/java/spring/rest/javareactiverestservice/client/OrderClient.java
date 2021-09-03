@@ -68,4 +68,14 @@ public class OrderClient {
                 .retrieve()
                 .bodyToMono(Void.class);
     }
+
+    public Mono<Void> deleteOrders(Flux<Order> orders, String requestId) {
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/order/delete").build())
+                .attribute(REQUEST_ID, requestId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromProducer(orders, Order.class))
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
 }
