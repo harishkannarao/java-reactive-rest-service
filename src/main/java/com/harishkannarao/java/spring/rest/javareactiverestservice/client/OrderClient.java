@@ -4,8 +4,10 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.filter.WebCli
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
@@ -77,5 +79,24 @@ public class OrderClient {
                 .body(BodyInserters.fromProducer(orders, Order.class))
                 .retrieve()
                 .bodyToMono(Void.class);
+    }
+
+    public Flux<Order> getCustomerOrders(UUID customerId, String requestId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/order/customer/{customerId}")
+                        .build(Map.ofEntries(Map.entry("customerId", customerId)))
+                )
+                .attribute(REQUEST_ID, requestId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchangeToFlux(clientResponse -> {
+                    if (clientResponse.statusCode().is2xxSuccessful()) {
+                        return clientResponse.bodyToFlux(Order.class);
+                    } else if (HttpStatus.NOT_FOUND.equals(clientResponse.statusCode())) {
+                        return Flux.empty();
+                    } else {
+                        throw new RuntimeException("Received status: " + clientResponse.rawStatusCode());
+                    }
+                });
     }
 }

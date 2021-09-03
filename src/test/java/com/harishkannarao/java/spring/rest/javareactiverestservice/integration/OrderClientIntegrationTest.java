@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 @SuppressWarnings("ConstantConditions")
 public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
@@ -69,6 +70,55 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetOrderRequests();
         assertThat(orderRequests).hasSize(1);
         assertThat(((HttpRequest) orderRequests[0]).getQueryStringParameters()).isNull();
+    }
+
+    @Test
+    void getCustomerOrders() {
+        Order order1 = OrderFixtures.randomOrder();
+        Order order2 = OrderFixtures.randomOrder();
+        Customer customer = CustomerFixtures.randomCustomer();
+        List<Order> orders = List.of(order1, order2);
+
+        Stubs.orderServiceStub()
+                .stubGetCustomerOrders(200, customer.getId().toString(), Optional.of(jsonUtil().toJson(orders)));
+
+        List<Order> result = underTest()
+                .getCustomerOrders(customer.getId(), UUID.randomUUID().toString())
+                .collectList().block();
+
+        assertThat(result).hasSize(2);
+        Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
+        assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
+        assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+    }
+
+    @Test
+    void getCustomerOrders_returnsEmptyOn404() {
+        Customer customer = CustomerFixtures.randomCustomer();
+
+        Stubs.orderServiceStub()
+                .stubGetCustomerOrders(404, customer.getId().toString(), Optional.empty());
+
+        List<Order> result = underTest()
+                .getCustomerOrders(customer.getId(), UUID.randomUUID().toString())
+                .collectList().block();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getCustomerOrders_throwsPropagatesError() {
+        Customer customer = CustomerFixtures.randomCustomer();
+
+        Stubs.orderServiceStub()
+                .stubGetCustomerOrders(500, customer.getId().toString(), Optional.empty());
+
+        Throwable result = catchThrowable(() -> underTest()
+                .getCustomerOrders(customer.getId(), UUID.randomUUID().toString())
+                .collectList().block());
+
+        assertThat(result).isInstanceOf(RuntimeException.class);
+        assertThat(result.getMessage()).contains("Received status: 500");
     }
 
     @Test

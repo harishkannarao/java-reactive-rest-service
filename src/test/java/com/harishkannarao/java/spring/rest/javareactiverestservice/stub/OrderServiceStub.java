@@ -86,4 +86,16 @@ public class OrderServiceStub {
                         .withPath("/order/delete")
         );
     }
+
+    public void stubGetCustomerOrders(int status, String customerId, Optional<String> responseBody) {
+        HttpResponse httpResponse = response().withStatusCode(status);
+        responseBody.ifPresent(value -> httpResponse.withBody(value, MediaType.APPLICATION_JSON));
+
+        mockServerClient.when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/order/customer/" + customerId)
+                )
+                .respond(httpResponse);
+    }
 }
