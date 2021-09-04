@@ -21,12 +21,10 @@ public class OrderServiceStub {
 
     public void stubGetOrders(int status,
                               String responseBody,
-                              Optional<String> customerId,
                               Optional<Integer> limit) {
         HttpRequest httpRequest = request()
                 .withMethod("GET")
                 .withPath("/order");
-        customerId.ifPresent(it -> httpRequest.withQueryStringParameter("customer", it));
         limit.ifPresent(it -> httpRequest.withQueryStringParameter("limit", it.toString()));
         HttpResponse httpResponse = response()
                 .withStatusCode(status)
@@ -36,7 +34,7 @@ public class OrderServiceStub {
     }
 
     public void stubGetOrders(int status, String responseBody) {
-        stubGetOrders(status, responseBody, Optional.empty(), Optional.empty());
+        stubGetOrders(status, responseBody, Optional.empty());
     }
 
     public RequestDefinition[] retrieveGetOrderRequests() {

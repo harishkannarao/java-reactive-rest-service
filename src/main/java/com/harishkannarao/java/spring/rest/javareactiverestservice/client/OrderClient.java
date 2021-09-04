@@ -38,16 +38,12 @@ public class OrderClient {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public Flux<Order> getOrders(Optional<UUID> customerId, Optional<Integer> limit, String requestId) {
+    public Flux<Order> getOrders(Optional<Integer> limit, String requestId) {
         return webClient.get()
                 .uri(uriBuilder -> {
                             UriBuilder builder = uriBuilder
                                     .path("/order");
                             Map<String, String> variables = new HashMap<>();
-                            customerId.ifPresent(it -> {
-                                builder.queryParam("customer", "{customerId}");
-                                variables.put("customerId", it.toString());
-                            });
                             limit.ifPresent(it -> {
                                 builder.queryParam("limit", "{limit}");
                                 variables.put("limit", it.toString());

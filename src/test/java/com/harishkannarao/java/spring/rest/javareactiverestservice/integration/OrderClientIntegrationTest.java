@@ -31,17 +31,15 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Order order1 = OrderFixtures.randomOrder();
         Order order2 = OrderFixtures.randomOrder();
         List<Order> orders = List.of(order1, order2);
-        Customer customer = CustomerFixtures.randomCustomer();
         Integer limit = 10;
 
         Stubs.orderServiceStub()
                 .stubGetOrders(200,
                         jsonUtil().toJson(orders),
-                        Optional.of(customer.getId().toString()),
                         Optional.of(limit));
 
         List<Order> result = underTest()
-                .getOrders(Optional.of(customer.getId()), Optional.of(limit), UUID.randomUUID().toString())
+                .getOrders(Optional.of(limit), UUID.randomUUID().toString())
                 .collectList().block();
 
         assertThat(result).hasSize(2);
@@ -60,7 +58,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
                 .stubGetOrders(200, jsonUtil().toJson(orders));
 
         List<Order> result = underTest()
-                .getOrders(Optional.empty(), Optional.empty(), UUID.randomUUID().toString())
+                .getOrders( Optional.empty(), UUID.randomUUID().toString())
                 .collectList().block();
 
         assertThat(result).hasSize(2);

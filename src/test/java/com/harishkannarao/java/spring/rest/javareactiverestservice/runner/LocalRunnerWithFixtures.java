@@ -48,16 +48,21 @@ public class LocalRunnerWithFixtures {
         Integer limit = 10;
 
         customers.forEach(it -> Stubs.orderServiceStub()
-                .stubGetOrders(200,
-                        jsonUtil.toJson(orders),
-                        Optional.of(it.getId().toString()),
-                        Optional.of(limit)));
+                .stubGetCustomerOrders(200,
+                        it.getId().toString(),
+                        Optional.of(jsonUtil.toJson(orders))));
 
         Stubs.orderServiceStub()
                 .stubGetOrders(200, jsonUtil.toJson(orders));
 
         Stubs.orderServiceStub()
                 .stubCreateOrder(204);
+
+        Stubs.orderServiceStub()
+                .stubCreateOrder(204);
+
+        Stubs.orderServiceStub()
+                .stubDeleteOrders(204);
     }
 
     private static List<String> getPostgresTestProperties() {

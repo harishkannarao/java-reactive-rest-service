@@ -32,7 +32,6 @@ public class OrderController {
         return ResponseEntity.ok()
                 .body(
                         orderClient.getOrders(
-                                Optional.empty(),
                                 limit,
                                 serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
     }
