@@ -7,6 +7,7 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import org.junit.jupiter.api.Test;
 import org.mockserver.model.RequestDefinition;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -56,5 +57,40 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
 
         RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetCustomerOrdersRequests(customerId);
         assertThat(orderRequests).hasSize(0);
+    }
+
+    @Test
+    void getCustomerOrders_returnsEmpty_on404FromOrderService() {
+        Customer customer = CustomerFixtures.randomCustomer();
+
+        Stubs.orderServiceStub()
+                .stubGetCustomerOrders(404, customer.getId().toString(), Optional.empty());
+
+        customerApiClient()
+                .create(customer);
+
+        customerOrderApiClient()
+                .get(customer.getId().toString())
+                .expectStatus().isOk()
+                .expectBodyList(Order.class)
+                .hasSize(0);
+
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetCustomerOrdersRequests(customer.getId().toString());
+        assertThat(orderRequests).hasSize(1);
+    }
+
+    @Test
+    void getCustomerOrders_returnsError_onErrorFromOrderService() {
+        Customer customer = CustomerFixtures.randomCustomer();
+
+        Stubs.orderServiceStub()
+                .stubGetCustomerOrders(500, customer.getId().toString(), Optional.empty());
+
+        customerApiClient()
+                .create(customer);
+
+        customerOrderApiClient()
+                .get(customer.getId().toString())
+                .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
