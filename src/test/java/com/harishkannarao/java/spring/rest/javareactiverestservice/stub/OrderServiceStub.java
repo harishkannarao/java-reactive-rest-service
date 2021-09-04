@@ -98,4 +98,12 @@ public class OrderServiceStub {
                 )
                 .respond(httpResponse);
     }
+
+    public RequestDefinition[] retrieveGetCustomerOrdersRequests(String customerId) {
+        return mockServerClient.retrieveRecordedRequests(
+                request()
+                        .withMethod("GET")
+                        .withPath("/order/customer/" + customerId)
+        );
+    }
 }

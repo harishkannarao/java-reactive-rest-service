@@ -36,7 +36,7 @@ public class CustomerOrderController {
             ServerWebExchange serverWebExchange) {
         Flux<Order> result = customerRepository.getCustomer(customerId)
                 .transform(it -> MonoTransformers.errorOnEmpty(it, () -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                .map(it -> orderClient.getOrders(Optional.of(it.getId()), Optional.empty(), serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))).flux()
+                .map(it -> orderClient.getCustomerOrders(it.getId(), serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))).flux()
                 .flatMap(it -> it);
         return ResponseEntity.ok().body(result);
     }

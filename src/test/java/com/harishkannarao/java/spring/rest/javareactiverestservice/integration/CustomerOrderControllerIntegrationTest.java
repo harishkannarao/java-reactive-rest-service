@@ -28,10 +28,9 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubGetOrders(200,
-                        jsonUtil().toJson(orders),
-                        Optional.of(customer.getId().toString()),
-                        Optional.empty());
+                .stubGetCustomerOrders(200,
+                        customer.getId().toString(),
+                        Optional.of(jsonUtil().toJson(orders)));
 
         customerApiClient()
                 .create(customer);
@@ -50,11 +49,12 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
 
     @Test
     void getCustomerOrders_returns404_whenCustomerDoNotExist() {
+        String customerId = UUID.randomUUID().toString();
         customerOrderApiClient()
-                .get(UUID.randomUUID().toString())
+                .get(customerId)
                 .expectStatus().isNotFound();
 
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetOrderRequests();
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetCustomerOrdersRequests(customerId);
         assertThat(orderRequests).hasSize(0);
     }
 }
