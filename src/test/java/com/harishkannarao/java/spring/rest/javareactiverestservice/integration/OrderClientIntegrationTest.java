@@ -9,6 +9,7 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import org.junit.jupiter.api.Test;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.RequestDefinition;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -117,8 +118,8 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
                 .getCustomerOrders(customer.getId(), UUID.randomUUID().toString())
                 .collectList().block());
 
-        assertThat(result).isInstanceOf(RuntimeException.class);
-        assertThat(result.getMessage()).contains("Received status: 500");
+        assertThat(result).isInstanceOf(WebClientResponseException.class);
+        assertThat(result.getMessage()).contains("500 Internal Server Error");
     }
 
     @Test

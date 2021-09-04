@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -95,7 +95,7 @@ public class OrderClient {
                     } else if (HttpStatus.NOT_FOUND.equals(clientResponse.statusCode())) {
                         return Flux.empty();
                     } else {
-                        throw new RuntimeException("Received status: " + clientResponse.rawStatusCode());
+                        throw new WebClientResponseException(clientResponse.rawStatusCode(), clientResponse.statusCode().getReasonPhrase(), null, null, null);
                     }
                 });
     }
