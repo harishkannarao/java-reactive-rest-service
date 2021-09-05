@@ -58,4 +58,12 @@ public class OrderApiClient {
                 .body(BodyInserters.fromValue(orders))
                 .exchange();
     }
+
+    public WebTestClient.ResponseSpec delete() {
+        return webTestClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/order/delete").build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+    }
 }

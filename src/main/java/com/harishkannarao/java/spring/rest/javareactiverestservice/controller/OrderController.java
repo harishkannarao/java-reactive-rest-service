@@ -2,14 +2,18 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.controller;
 
 import com.harishkannarao.java.spring.rest.javareactiverestservice.client.OrderClient;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
+import com.harishkannarao.java.spring.rest.javareactiverestservice.transformer.MonoTransformers;
+import io.netty.util.AsciiString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
@@ -45,8 +49,14 @@ public class OrderController {
 
     @PostMapping(path = {"/order/delete"})
     public ResponseEntity<Mono<Void>> deleteOrders(@RequestBody Flux<Order> orders, ServerWebExchange serverWebExchange) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(
-                        orderClient.deleteOrders(orders, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
+        Mono<Void> result = orders.collectList()
+                .flatMap(c -> {
+                    if (c.isEmpty() || c.size() > 5) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    }
+                    return orderClient.deleteOrders(Flux.fromIterable(c), serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE));
+                });
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
     }
 }

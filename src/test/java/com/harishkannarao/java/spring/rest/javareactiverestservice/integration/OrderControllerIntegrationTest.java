@@ -88,12 +88,15 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
     void deleteOrders() {
         Order order1 = OrderFixtures.randomOrder();
         Order order2 = OrderFixtures.randomOrder();
+        Order order3 = OrderFixtures.randomOrder();
+        Order order4 = OrderFixtures.randomOrder();
+        Order order5 = OrderFixtures.randomOrder();
 
         Stubs.orderServiceStub()
                 .stubDeleteOrders(204);
 
         orderApiClient()
-                .delete(List.of(order1, order2))
+                .delete(List.of(order1, order2, order3, order4, order5))
                 .expectStatus().isNoContent();
 
         RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
@@ -102,5 +105,45 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         Map<UUID, Order> mappedReceivedOrders = Arrays.stream(receivedOrders).collect(Collectors.toMap(Order::getId, it -> it));
         assertThat(mappedReceivedOrders.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
         assertThat(mappedReceivedOrders.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+        assertThat(mappedReceivedOrders.get(order3.getId())).usingRecursiveComparison().isEqualTo(order3);
+        assertThat(mappedReceivedOrders.get(order4.getId())).usingRecursiveComparison().isEqualTo(order4);
+        assertThat(mappedReceivedOrders.get(order5.getId())).usingRecursiveComparison().isEqualTo(order5);
+    }
+
+    @Test
+    void deleteOrders_returnsError_onMissingBody() {
+        orderApiClient()
+                .delete()
+                .expectStatus().isBadRequest();
+
+        RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
+        assertThat(deleteOrdersRequests).hasSize(0);
+    }
+
+    @Test
+    void deleteOrders_returnsError_onEmptyList() {
+        orderApiClient()
+                .delete(List.of())
+                .expectStatus().isBadRequest();
+
+        RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
+        assertThat(deleteOrdersRequests).hasSize(0);
+    }
+
+    @Test
+    void deleteOrders_returnsError_onOrdersMoreThan5() {
+        orderApiClient()
+                .delete(List.of(
+                        OrderFixtures.randomOrder(),
+                        OrderFixtures.randomOrder(),
+                        OrderFixtures.randomOrder(),
+                        OrderFixtures.randomOrder(),
+                        OrderFixtures.randomOrder(),
+                        OrderFixtures.randomOrder()
+                ))
+                .expectStatus().isBadRequest();
+
+        RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
+        assertThat(deleteOrdersRequests).hasSize(0);
     }
 }
