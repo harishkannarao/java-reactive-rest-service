@@ -41,6 +41,14 @@ public class OrderApiClient {
                 .exchange();
     }
 
+    public WebTestClient.ResponseSpec create() {
+        return webTestClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/order").build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+    }
+
     public WebTestClient.ResponseSpec delete(List<Order> orders) {
         return webTestClient
                 .post()
