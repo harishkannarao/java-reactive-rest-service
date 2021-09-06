@@ -111,23 +111,25 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
     }
 
     @Test
-    void deleteOrders_returnsError_onMissingBody() {
+    void deleteOrders_onMissingBody_doesNothing() {
+        Stubs.orderServiceStub()
+                .stubDeleteOrders(204);
+
         orderApiClient()
-                .delete()
-                .expectStatus().isBadRequest();
+                .delete(true)
+                .expectStatus().isNoContent();
 
         RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
-        assertThat(deleteOrdersRequests).hasSize(0);
+        assertThat(deleteOrdersRequests).hasSize(1);
+        Order[] receivedOrders = jsonUtil().fromJson(((HttpRequest) deleteOrdersRequests[0]).getBodyAsJsonOrXmlString(), Order[].class);
+        assertThat(receivedOrders).hasSize(0);
     }
 
     @Test
-    void deleteOrders_returnsError_onEmptyList() {
+    void deleteOrders_returnsError_onMissingMandatoryHeader() {
         orderApiClient()
-                .delete(List.of())
+                .delete(false)
                 .expectStatus().isBadRequest();
-
-        RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
-        assertThat(deleteOrdersRequests).hasSize(0);
     }
 
     @Test

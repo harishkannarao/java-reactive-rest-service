@@ -53,17 +53,21 @@ public class OrderApiClient {
         return webTestClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path("/order/delete").build())
+                .header("maxOrdersInPayload", String.valueOf(orders.size()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(orders))
                 .exchange();
     }
 
-    public WebTestClient.ResponseSpec delete() {
-        return webTestClient
+    public WebTestClient.ResponseSpec delete(boolean includeMaxOrdersHeader) {
+        WebTestClient.RequestBodySpec requestBodySpec = webTestClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path("/order/delete").build())
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange();
+                .accept(MediaType.APPLICATION_JSON);
+        if (includeMaxOrdersHeader) {
+            requestBodySpec.header("maxOrdersInPayload", "0");
+        }
+        return requestBodySpec.exchange();
     }
 }
