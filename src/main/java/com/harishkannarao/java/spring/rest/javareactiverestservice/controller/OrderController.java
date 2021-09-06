@@ -41,14 +41,14 @@ public class OrderController {
     }
 
     @PostMapping(path = {"/order"})
-    public ResponseEntity<Mono<Void>> createOrder(@RequestBody Mono<Order> order, ServerWebExchange serverWebExchange) {
+    public ResponseEntity<Mono<Void>> createOrder(@RequestBody(required = false) Mono<Order> order, ServerWebExchange serverWebExchange) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(
                         orderClient.createOrder(order, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
     }
 
     @PostMapping(path = {"/order/delete"})
-    public ResponseEntity<Mono<Void>> deleteOrders(@RequestBody Flux<Order> orders, ServerWebExchange serverWebExchange) {
+    public ResponseEntity<Mono<Void>> deleteOrders(@RequestBody(required = false) Flux<Order> orders, ServerWebExchange serverWebExchange) {
         Mono<Void> result = orders.collectList()
                 .flatMap(c -> {
                     if (c.isEmpty() || c.size() > 5) {

@@ -35,12 +35,6 @@ public class GlobalErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
             transformed.put("error", HttpStatus.CONFLICT.getReasonPhrase());
             transformed.put("message", exception.getCause().getMessage());
         }
-        if (error.getCause() instanceof ServerWebInputException) {
-            ServerWebInputException exception = (ServerWebInputException) error.getCause();
-            transformed.put("status", exception.getStatus().value());
-            transformed.put("error", exception.getStatus().getReasonPhrase());
-            transformed.put("message", exception.getMessage());
-        }
         return transformed;
     }
 }

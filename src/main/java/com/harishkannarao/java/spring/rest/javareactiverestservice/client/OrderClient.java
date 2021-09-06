@@ -57,14 +57,14 @@ public class OrderClient {
     }
 
     public Mono<Void> createOrder(Mono<Order> order, String requestId) {
-        return webClient.post()
+        return order.flatMap(it -> webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/order").build())
                 .attribute(REQUEST_ID, requestId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromProducer(order, Order.class))
+                .body(BodyInserters.fromValue(it))
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class));
     }
 
     public Mono<Void> deleteOrders(Flux<Order> orders, String requestId) {

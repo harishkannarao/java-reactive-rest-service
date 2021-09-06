@@ -75,10 +75,10 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
     }
 
     @Test
-    void createOrder_withEmptyBody_returnsError() {
+    void createOrder_withEmptyBody_doesNotCallOrderServiceApi() {
         orderApiClient()
                 .create()
-                .expectStatus().isBadRequest();
+                .expectStatus().isNoContent();
 
         RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();
         assertThat(createOrderRequests).hasSize(0);
