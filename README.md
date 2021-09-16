@@ -6,7 +6,7 @@ This repository is to showcase Reactive REST Service using Java and Spring Boot.
 [![Build Status](https://github.com/harishkannarao/java-reactive-rest-service/workflows/CI-main/badge.svg)](https://github.com/harishkannarao/java-reactive-rest-service/actions?query=workflow%3ACI-main)
 
 ## Required Softwares, Tools and Version
-* Java JDK Version: 11
+* Java JDK Version: 17
 * Gradle Version: 7
 * Git Client: Any latest version
 * Integrated Development Environment: Any version of IntelliJ Idea or Eclipse
