@@ -67,6 +67,7 @@ public class LocalRunnerWithFixtures {
 
     private static List<String> getPostgresTestProperties() {
         return List.of(
+                "--postgresql-datasource.timeout=10",
                 "--postgresql-datasource.host=" + PostgresTestRunner.getHost(),
                 "--postgresql-datasource.port=" + PostgresTestRunner.getPort(),
                 "--postgresql-datasource.database=" + PostgresTestRunner.getUsername(),

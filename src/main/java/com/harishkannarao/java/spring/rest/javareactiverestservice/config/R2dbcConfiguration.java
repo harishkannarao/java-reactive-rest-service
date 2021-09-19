@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 
+import java.time.Duration;
+
 @Configuration
 public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
 
@@ -23,12 +25,13 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
     public ConnectionFactory connectionFactory() {
         return new PostgresqlConnectionFactory(
                 PostgresqlConnectionConfiguration.builder()
-                .host(environment.getRequiredProperty("postgresql-datasource.host"))
-                .port(environment.getRequiredProperty("postgresql-datasource.port", Integer.class))
-                .database(environment.getRequiredProperty("postgresql-datasource.database"))
-                .username(environment.getRequiredProperty("postgresql-datasource.username"))
-                .password(environment.getRequiredProperty("postgresql-datasource.password"))
-                .build()
+                        .connectTimeout(Duration.ofSeconds(environment.getRequiredProperty("postgresql-datasource.timeout", Long.class)))
+                        .host(environment.getRequiredProperty("postgresql-datasource.host"))
+                        .port(environment.getRequiredProperty("postgresql-datasource.port", Integer.class))
+                        .database(environment.getRequiredProperty("postgresql-datasource.database"))
+                        .username(environment.getRequiredProperty("postgresql-datasource.username"))
+                        .password(environment.getRequiredProperty("postgresql-datasource.password"))
+                        .build()
         );
     }
 }
