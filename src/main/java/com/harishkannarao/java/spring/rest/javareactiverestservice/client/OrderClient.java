@@ -2,10 +2,14 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.client;
 
 import com.harishkannarao.java.spring.rest.javareactiverestservice.filter.WebClientLoggingFilter;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +35,21 @@ public class OrderClient {
     public OrderClient(
             WebClient.Builder webClientBuilder,
             WebClientLoggingFilter webClientLoggingFilter,
-            @Value("${order-service.base-url}") String orderServiceBaseUrl) {
+            @Value("${order-service.base-url}") String orderServiceBaseUrl,
+            @Value("${order-service.timeout-seconds}") Integer orderServiceTimeoutSeconds) {
         this.webClient = webClientBuilder
                 .baseUrl(orderServiceBaseUrl)
                 .filter(webClientLoggingFilter)
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient.create()
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, orderServiceTimeoutSeconds * 1000)
+                                        .doOnConnected(c ->
+                                                c.addHandlerLast(new ReadTimeoutHandler(orderServiceTimeoutSeconds))
+                                                .addHandlerLast(new WriteTimeoutHandler(orderServiceTimeoutSeconds))
+                                        )
+                        )
+                )
                 .build();
     }
 

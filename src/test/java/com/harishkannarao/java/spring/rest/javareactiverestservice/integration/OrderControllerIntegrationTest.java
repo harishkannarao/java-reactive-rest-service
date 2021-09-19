@@ -22,7 +22,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         List<Order> orders = List.of(order1, order2);
 
         Stubs.orderServiceStub()
-                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.empty());
+                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.empty(), Optional.empty());
 
         orderApiClient()
                 .get()
@@ -43,7 +43,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         List<Order> orders = List.of(order1, order2);
 
         Stubs.orderServiceStub()
-                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.of(10));
+                .stubGetOrders(200, jsonUtil().toJson(orders), Optional.of(10), Optional.empty());
 
         orderApiClient()
                 .get(Optional.of(10))

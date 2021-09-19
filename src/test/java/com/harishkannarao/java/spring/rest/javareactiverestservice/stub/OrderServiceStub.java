@@ -1,10 +1,7 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.stub;
 
 import org.mockserver.client.MockServerClient;
-import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
-import org.mockserver.model.MediaType;
-import org.mockserver.model.RequestDefinition;
+import org.mockserver.model.*;
 
 import java.util.Optional;
 
@@ -21,7 +18,8 @@ public class OrderServiceStub {
 
     public void stubGetOrders(int status,
                               String responseBody,
-                              Optional<Integer> limit) {
+                              Optional<Integer> limit,
+                              Optional<Delay> delay) {
         HttpRequest httpRequest = request()
                 .withMethod("GET")
                 .withPath("/order");
@@ -29,12 +27,13 @@ public class OrderServiceStub {
         HttpResponse httpResponse = response()
                 .withStatusCode(status)
                 .withBody(responseBody, MediaType.APPLICATION_JSON);
+        delay.ifPresent(httpResponse::withDelay);
         mockServerClient.when(httpRequest)
                 .respond(httpResponse);
     }
 
     public void stubGetOrders(int status, String responseBody) {
-        stubGetOrders(status, responseBody, Optional.empty());
+        stubGetOrders(status, responseBody, Optional.empty(), Optional.empty());
     }
 
     public RequestDefinition[] retrieveGetOrderRequests() {

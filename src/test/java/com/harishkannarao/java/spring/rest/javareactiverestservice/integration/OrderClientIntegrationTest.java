@@ -6,9 +6,12 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.Order
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
+import io.netty.handler.timeout.ReadTimeoutException;
 import org.junit.jupiter.api.Test;
+import org.mockserver.model.Delay;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.RequestDefinition;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 @SuppressWarnings("ConstantConditions")
@@ -36,7 +40,8 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         Stubs.orderServiceStub()
                 .stubGetOrders(200,
                         jsonUtil().toJson(orders),
-                        Optional.of(limit));
+                        Optional.of(limit),
+                        Optional.empty());
 
         List<Order> result = underTest()
                 .getOrders(Optional.of(limit), UUID.randomUUID().toString())
@@ -69,6 +74,18 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
         RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetOrderRequests();
         assertThat(orderRequests).hasSize(1);
         assertThat(((HttpRequest) orderRequests[0]).getQueryStringParameters()).isNull();
+    }
+
+    @Test
+    void getOrders_shouldTimeout() {
+        Stubs.orderServiceStub()
+                .stubGetOrders(200, "[]", Optional.empty(), Optional.of(Delay.seconds(6)));
+
+        WebClientRequestException result = catchThrowableOfType(() -> underTest()
+                .getOrders(Optional.empty(), UUID.randomUUID().toString())
+                .collectList().block(), WebClientRequestException.class);
+
+        assertThat(result.getCause()).isInstanceOf(ReadTimeoutException.class);
     }
 
     @Test

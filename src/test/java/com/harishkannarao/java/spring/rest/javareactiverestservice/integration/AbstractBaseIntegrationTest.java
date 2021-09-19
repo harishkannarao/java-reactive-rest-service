@@ -50,7 +50,8 @@ public abstract class AbstractBaseIntegrationTest {
 
     private List<String> getMockServerTestProperties() {
         return List.of(
-                "--order-service.base-url=" + MockServerTestRunner.getUrl()
+                "--order-service.base-url=" + MockServerTestRunner.getUrl(),
+                "--order-service.timeout-seconds=5"
         );
     }
 
