@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public class CreateCustomerResponse {
-
-    private final UUID id;
+public record CreateCustomerResponse(UUID id) {
 
     @JsonCreator
     public CreateCustomerResponse(

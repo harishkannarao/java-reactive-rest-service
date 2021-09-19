@@ -1,6 +1,5 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
-import com.harishkannarao.java.spring.rest.javareactiverestservice.assertion.CustomerAssertion;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.response.CreateCustomerResponse;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
             customerApiClient().get(customer.getId())
                     .expectStatus().isOk()
                     .expectBody(Customer.class)
-                    .value((it) -> CustomerAssertion.assertEquals(it, customer));
+                    .value((it) -> assertThat(it).isEqualTo(customer));
         });
 
         customerApiClient().getAll()
@@ -41,8 +40,8 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
                 .expectBodyList(Customer.class)
                 .value((it) -> {
                     assertThat(it).hasSize(2);
-                    CustomerAssertion.assertEquals(it.get(0), input1);
-                    CustomerAssertion.assertEquals(it.get(1), input2);
+                    assertThat(it.get(0)).isEqualTo(input1);
+                    assertThat(it.get(1)).isEqualTo(input2);
                 });
 
 
@@ -72,8 +71,8 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
                 .value((list) -> {
                     assertThat(list).hasSize(2);
                     Map<UUID, Customer> customerMap = list.stream().collect(Collectors.toMap(Customer::getId, it -> it));
-                    CustomerAssertion.assertEquals(customerMap.get(input1.getId()), input1);
-                    CustomerAssertion.assertEquals(customerMap.get(input2.getId()), input2);
+                    assertThat(customerMap.get(input1.getId())).isEqualTo(input1);
+                    assertThat(customerMap.get(input2.getId())).isEqualTo(input2);
                 });
     }
 

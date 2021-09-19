@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public class Order {
-
-    private final UUID id;
-    private final String description;
+public record Order(UUID id, String description) {
 
     @JsonCreator
     public Order(

@@ -5,11 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public class Customer {
-
-    private final UUID id;
-    private final String firstName;
-    private final String lastName;
+public record Customer(UUID id, String firstName, String lastName) {
 
     @JsonCreator
     public Customer(

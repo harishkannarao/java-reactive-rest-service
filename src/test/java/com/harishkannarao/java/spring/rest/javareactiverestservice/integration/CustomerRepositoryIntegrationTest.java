@@ -1,7 +1,5 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 
-import com.harishkannarao.java.spring.rest.javareactiverestservice.assertion.CustomerAssertion;
-import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.CustomerFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Customer;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.repository.CustomerRepository;
 import org.junit.jupiter.api.Assertions;
@@ -29,19 +27,19 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         assertThat(id1).isEqualTo(input1.getId());
 
         Customer getResult = underTest.getCustomer(input1.getId()).block();
-        CustomerAssertion.assertEquals(getResult, input1);
+        assertThat(getResult).isEqualTo(input1);
 
         List<Customer> listResult1 = underTest.listCustomers().collectList().block();
         assertThat(listResult1).hasSize(1);
-        CustomerAssertion.assertEquals(listResult1.get(0), input1);
+        assertThat(listResult1.get(0)).isEqualTo(input1);
 
         UUID id2 = underTest.createCustomer(input2).block();
         assertThat(id2).isEqualTo(input2.getId());
 
         List<Customer> listResult2 = underTest.listCustomers().collectList().block();
         assertThat(listResult2).hasSize(2);
-        CustomerAssertion.assertEquals(listResult2.get(0), input1);
-        CustomerAssertion.assertEquals(listResult2.get(1), input2);
+        assertThat(listResult2.get(0)).isEqualTo(input1);
+        assertThat(listResult2.get(1)).isEqualTo(input2);
 
         Integer deletedResult = underTest.deleteAllCustomers().block();
         assertThat(deletedResult).isEqualTo(2);
