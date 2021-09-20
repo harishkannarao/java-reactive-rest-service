@@ -42,9 +42,9 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
                 .expectBodyList(Order.class)
                 .hasSize(2)
                 .value(result -> {
-                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
-                    assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
-                    assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::id, it -> it));
+                    assertThat(mappedResult.get(order1.id())).isEqualTo(order1);
+                    assertThat(mappedResult.get(order2.id())).isEqualTo(order2);
                 });
     }
 

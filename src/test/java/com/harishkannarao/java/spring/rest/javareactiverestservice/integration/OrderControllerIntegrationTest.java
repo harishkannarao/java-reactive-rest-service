@@ -30,9 +30,9 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                 .expectBodyList(Order.class)
                 .hasSize(2)
                 .value(result -> {
-                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
-                    assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
-                    assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::id, it -> it));
+                    assertThat(mappedResult.get(order1.id())).isEqualTo(order1);
+                    assertThat(mappedResult.get(order2.id())).isEqualTo(order2);
                 });
     }
 
@@ -51,9 +51,9 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
                 .expectBodyList(Order.class)
                 .hasSize(2)
                 .value(result -> {
-                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::getId, it -> it));
-                    assertThat(mappedResult.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
-                    assertThat(mappedResult.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
+                    Map<UUID, Order> mappedResult = result.stream().collect(Collectors.toMap(Order::id, it -> it));
+                    assertThat(mappedResult.get(order1.id())).isEqualTo(order1);
+                    assertThat(mappedResult.get(order2.id())).isEqualTo(order2);
                 });
     }
 
@@ -71,7 +71,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         RequestDefinition[] createOrderRequests = Stubs.orderServiceStub().retrieveCreateOrderRequests();
         assertThat(createOrderRequests).hasSize(1);
         Order receivedOrder = jsonUtil().fromJson(((HttpRequest) createOrderRequests[0]).getBodyAsJsonOrXmlString(), Order.class);
-        assertThat(receivedOrder).usingRecursiveComparison().isEqualTo(order);
+        assertThat(receivedOrder).isEqualTo(order);
     }
 
     @Test
@@ -102,12 +102,12 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         RequestDefinition[] deleteOrdersRequests = Stubs.orderServiceStub().retrieveDeleteOrdersRequests();
         assertThat(deleteOrdersRequests).hasSize(1);
         Order[] receivedOrders = jsonUtil().fromJson(((HttpRequest) deleteOrdersRequests[0]).getBodyAsJsonOrXmlString(), Order[].class);
-        Map<UUID, Order> mappedReceivedOrders = Arrays.stream(receivedOrders).collect(Collectors.toMap(Order::getId, it -> it));
-        assertThat(mappedReceivedOrders.get(order1.getId())).usingRecursiveComparison().isEqualTo(order1);
-        assertThat(mappedReceivedOrders.get(order2.getId())).usingRecursiveComparison().isEqualTo(order2);
-        assertThat(mappedReceivedOrders.get(order3.getId())).usingRecursiveComparison().isEqualTo(order3);
-        assertThat(mappedReceivedOrders.get(order4.getId())).usingRecursiveComparison().isEqualTo(order4);
-        assertThat(mappedReceivedOrders.get(order5.getId())).usingRecursiveComparison().isEqualTo(order5);
+        Map<UUID, Order> mappedReceivedOrders = Arrays.stream(receivedOrders).collect(Collectors.toMap(Order::id, it -> it));
+        assertThat(mappedReceivedOrders.get(order1.id())).isEqualTo(order1);
+        assertThat(mappedReceivedOrders.get(order2.id())).isEqualTo(order2);
+        assertThat(mappedReceivedOrders.get(order3.id())).isEqualTo(order3);
+        assertThat(mappedReceivedOrders.get(order4.id())).isEqualTo(order4);
+        assertThat(mappedReceivedOrders.get(order5.id())).isEqualTo(order5);
     }
 
     @Test
