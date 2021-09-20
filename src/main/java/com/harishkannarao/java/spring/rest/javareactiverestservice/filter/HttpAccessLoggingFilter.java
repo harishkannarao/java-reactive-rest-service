@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 import static net.logstash.logback.argument.StructuredArguments.fields;
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
-@SuppressWarnings("NullableProblems")
+@SuppressWarnings({"NullableProblems", "unused"})
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class HttpAccessLoggingFilter implements WebFilter {
@@ -48,72 +48,15 @@ public class HttpAccessLoggingFilter implements WebFilter {
         return chain.filter(exchange);
     }
 
-    public static class AccessLogEntries {
-        private final Integer status;
-        private final String requestId;
-        private final String method;
-        private final String path;
-        private final String queryParams;
-        private final Long responseTimeMs;
-        private final String requestTimestamp;
-        private final String responseTimestamp;
-
-        public AccessLogEntries(Integer status, String requestId, String method, String path, String queryParams, Long responseTimeMs, String requestTimestamp, String responseTimestamp) {
-            this.status = status;
-            this.requestId = requestId;
-            this.method = method;
-            this.path = path;
-            this.queryParams = queryParams;
-            this.responseTimeMs = responseTimeMs;
-            this.requestTimestamp = requestTimestamp;
-            this.responseTimestamp = responseTimestamp;
-        }
-
-        public Integer getStatus() {
-            return status;
-        }
-
-        public String getRequestId() {
-            return requestId;
-        }
-
-        public String getMethod() {
-            return method;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public String getQueryParams() {
-            return queryParams;
-        }
-
-        public Long getResponseTimeMs() {
-            return responseTimeMs;
-        }
-
-        public String getRequestTimestamp() {
-            return requestTimestamp;
-        }
-
-        public String getResponseTimestamp() {
-            return responseTimestamp;
-        }
-
-        @Override
-        public String toString() {
-            return "AccessLogEntries{" +
-                    "status=" + status +
-                    ", requestId='" + requestId + '\'' +
-                    ", method='" + method + '\'' +
-                    ", path='" + path + '\'' +
-                    ", queryParams='" + queryParams + '\'' +
-                    ", responseTimeMs=" + responseTimeMs +
-                    ", requestTimestamp='" + requestTimestamp + '\'' +
-                    ", responseTimestamp='" + responseTimestamp + '\'' +
-                    '}';
-        }
-    }
+    public record AccessLogEntries(
+            Integer status,
+            String requestId,
+            String method,
+            String path,
+            String queryParams,
+            Long responseTimeMs,
+            String requestTimestamp,
+            String responseTimestamp
+    ) { }
 
 }
