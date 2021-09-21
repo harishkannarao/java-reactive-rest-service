@@ -28,7 +28,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
             customerApiClient().create(customer)
                     .expectStatus().isOk()
                     .expectBody(CreateCustomerResponse.class)
-                    .value((it) -> assertThat(it.getId()).isEqualTo(customer.getId()));
+                    .value((it) -> assertThat(it.id()).isEqualTo(customer.getId()));
             customerApiClient().get(customer.getId())
                     .expectStatus().isOk()
                     .expectBody(Customer.class)
@@ -62,7 +62,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
                 .expectStatus().isOk()
                 .expectBodyList(CreateCustomerResponse.class)
                 .value(it -> {
-                    List<UUID> createdIds = it.stream().map(CreateCustomerResponse::getId).collect(Collectors.toList());
+                    List<UUID> createdIds = it.stream().map(CreateCustomerResponse::id).collect(Collectors.toList());
                     assertThat(createdIds).containsExactlyInAnyOrder(input1.getId(), input2.getId());
                 });
 
@@ -95,7 +95,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
         customerApiClient().create(input)
                 .expectStatus().isOk()
                 .expectBody(CreateCustomerResponse.class)
-                .value((it) -> assertThat(it.getId()).isEqualTo(input.getId()));
+                .value((it) -> assertThat(it.id()).isEqualTo(input.getId()));
 
         customerApiClient().create(input)
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
