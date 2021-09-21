@@ -45,11 +45,10 @@ public class LocalRunnerWithFixtures {
         Order order1 = OrderFixtures.randomOrder();
         Order order2 = OrderFixtures.randomOrder();
         List<Order> orders = List.of(order1, order2);
-        Integer limit = 10;
 
         customers.forEach(it -> Stubs.orderServiceStub()
                 .stubGetCustomerOrders(200,
-                        it.getId().toString(),
+                        it.id().toString(),
                         Optional.of(jsonUtil.toJson(orders))));
 
         Stubs.orderServiceStub()

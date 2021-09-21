@@ -34,7 +34,7 @@ public class CustomerRepository {
                 .bind("json_data", json_data)
                 .map(row -> jsonUtil.fromJson(row.get("data", String.class), Customer.class))
                 .first()
-                .map(Customer::getId);
+                .map(Customer::id);
     }
 
     public Mono<Customer> getCustomer(UUID id) {

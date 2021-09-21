@@ -24,9 +24,9 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         assertThat(underTest.listCustomers().collectList().block()).hasSize(0);
 
         UUID id1 = underTest.createCustomer(input1).block();
-        assertThat(id1).isEqualTo(input1.getId());
+        assertThat(id1).isEqualTo(input1.id());
 
-        Customer getResult = underTest.getCustomer(input1.getId()).block();
+        Customer getResult = underTest.getCustomer(input1.id()).block();
         assertThat(getResult).isEqualTo(input1);
 
         List<Customer> listResult1 = underTest.listCustomers().collectList().block();
@@ -34,7 +34,7 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         assertThat(listResult1.get(0)).isEqualTo(input1);
 
         UUID id2 = underTest.createCustomer(input2).block();
-        assertThat(id2).isEqualTo(input2.getId());
+        assertThat(id2).isEqualTo(input2.id());
 
         List<Customer> listResult2 = underTest.listCustomers().collectList().block();
         assertThat(listResult2).hasSize(2);
@@ -50,7 +50,7 @@ public class CustomerRepositoryIntegrationTest extends AbstractBaseIntegrationTe
         Customer input = randomCustomer();
         CustomerRepository underTest = getBean(CustomerRepository.class);
         UUID createdId = underTest.createCustomer(input).block();
-        assertThat(createdId).isEqualTo(input.getId());
+        assertThat(createdId).isEqualTo(input.id());
 
         DataIntegrityViolationException result = Assertions.assertThrows(DataIntegrityViolationException.class, () -> underTest.createCustomer(input).block());
         assertThat(result).hasMessageContaining("duplicate key value violates unique constraint", "unique_index_jsonb_id");

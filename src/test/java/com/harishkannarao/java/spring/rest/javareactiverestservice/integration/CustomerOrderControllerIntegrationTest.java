@@ -30,14 +30,14 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
 
         Stubs.orderServiceStub()
                 .stubGetCustomerOrders(200,
-                        customer.getId().toString(),
+                        customer.id().toString(),
                         Optional.of(jsonUtil().toJson(orders)));
 
         customerApiClient()
                 .create(customer);
 
         customerOrderApiClient()
-                .get(customer.getId().toString())
+                .get(customer.id().toString())
                 .expectStatus().isOk()
                 .expectBodyList(Order.class)
                 .hasSize(2)
@@ -64,18 +64,18 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubGetCustomerOrders(404, customer.getId().toString(), Optional.empty());
+                .stubGetCustomerOrders(404, customer.id().toString(), Optional.empty());
 
         customerApiClient()
                 .create(customer);
 
         customerOrderApiClient()
-                .get(customer.getId().toString())
+                .get(customer.id().toString())
                 .expectStatus().isOk()
                 .expectBodyList(Order.class)
                 .hasSize(0);
 
-        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetCustomerOrdersRequests(customer.getId().toString());
+        RequestDefinition[] orderRequests = Stubs.orderServiceStub().retrieveGetCustomerOrdersRequests(customer.id().toString());
         assertThat(orderRequests).hasSize(1);
     }
 
@@ -84,13 +84,13 @@ public class CustomerOrderControllerIntegrationTest extends AbstractBaseIntegrat
         Customer customer = CustomerFixtures.randomCustomer();
 
         Stubs.orderServiceStub()
-                .stubGetCustomerOrders(500, customer.getId().toString(), Optional.empty());
+                .stubGetCustomerOrders(500, customer.id().toString(), Optional.empty());
 
         customerApiClient()
                 .create(customer);
 
         customerOrderApiClient()
-                .get(customer.getId().toString())
+                .get(customer.id().toString())
                 .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

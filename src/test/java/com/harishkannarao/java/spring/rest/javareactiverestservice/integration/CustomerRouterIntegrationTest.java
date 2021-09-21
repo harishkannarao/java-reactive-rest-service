@@ -28,8 +28,8 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
             customerApiClient().create(customer)
                     .expectStatus().isOk()
                     .expectBody(CreateCustomerResponse.class)
-                    .value((it) -> assertThat(it.id()).isEqualTo(customer.getId()));
-            customerApiClient().get(customer.getId())
+                    .value((it) -> assertThat(it.id()).isEqualTo(customer.id()));
+            customerApiClient().get(customer.id())
                     .expectStatus().isOk()
                     .expectBody(Customer.class)
                     .value((it) -> assertThat(it).isEqualTo(customer));
@@ -63,16 +63,16 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
                 .expectBodyList(CreateCustomerResponse.class)
                 .value(it -> {
                     List<UUID> createdIds = it.stream().map(CreateCustomerResponse::id).collect(Collectors.toList());
-                    assertThat(createdIds).containsExactlyInAnyOrder(input1.getId(), input2.getId());
+                    assertThat(createdIds).containsExactlyInAnyOrder(input1.id(), input2.id());
                 });
 
         customerApiClient().getAll()
                 .expectBodyList(Customer.class)
                 .value((list) -> {
                     assertThat(list).hasSize(2);
-                    Map<UUID, Customer> customerMap = list.stream().collect(Collectors.toMap(Customer::getId, it -> it));
-                    assertThat(customerMap.get(input1.getId())).isEqualTo(input1);
-                    assertThat(customerMap.get(input2.getId())).isEqualTo(input2);
+                    Map<UUID, Customer> customerMap = list.stream().collect(Collectors.toMap(Customer::id, it -> it));
+                    assertThat(customerMap.get(input1.id())).isEqualTo(input1);
+                    assertThat(customerMap.get(input2.id())).isEqualTo(input2);
                 });
     }
 
@@ -95,7 +95,7 @@ public class CustomerRouterIntegrationTest extends AbstractBaseIntegrationTest {
         customerApiClient().create(input)
                 .expectStatus().isOk()
                 .expectBody(CreateCustomerResponse.class)
-                .value((it) -> assertThat(it.id()).isEqualTo(input.getId()));
+                .value((it) -> assertThat(it.id()).isEqualTo(input.id()));
 
         customerApiClient().create(input)
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
