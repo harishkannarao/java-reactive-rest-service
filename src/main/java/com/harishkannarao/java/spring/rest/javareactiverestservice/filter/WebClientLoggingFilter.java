@@ -64,50 +64,11 @@ public class WebClientLoggingFilter implements ExchangeFilterFunction {
                 });
     }
 
-    public static class LogEntries {
-        private final Integer status;
-        private final Long responseTimeMs;
-        private final String path;
-        private final String query;
-        private final String requestId;
-
-        public LogEntries(Integer status, Long responseTimeMs, String path, String query, String requestId) {
-            this.status = status;
-            this.responseTimeMs = responseTimeMs;
-            this.path = path;
-            this.query = query;
-            this.requestId = requestId;
-        }
-
-        public Long getResponseTimeMs() {
-            return responseTimeMs;
-        }
-
-        public Integer getStatus() {
-            return status;
-        }
-
-        public String getRequestId() {
-            return requestId;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        @Override
-        public String toString() {
-            return "LogEntries{" +
-                    "status=" + status +
-                    ", responseTimeMs=" + responseTimeMs +
-                    ", path='" + path + '\'' +
-                    ", query='" + query + '\'' +
-                    ", requestId='" + requestId + '\'' +
-                    '}';
-        }
-    }
+    public record LogEntries(
+            Integer status,
+            Long responseTimeMs,
+            String path,
+            String query,
+            String requestId
+    ) { }
 }
