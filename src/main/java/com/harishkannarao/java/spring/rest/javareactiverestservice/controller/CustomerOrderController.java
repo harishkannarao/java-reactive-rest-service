@@ -14,11 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
+@SuppressWarnings({"ClassCanBeRecord", "unused"})
 @RestController
 public class CustomerOrderController {
     private final CustomerRepository customerRepository;

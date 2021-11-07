@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ClassCanBeRecord"})
 @RestController
 public class OrderController {
     private final OrderClient orderClient;
