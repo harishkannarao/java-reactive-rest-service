@@ -13,7 +13,7 @@ val postgresqlVersion: String by project
 val flywayVersion: String by project
 val testContainersVersion: String by project
 val logstashLogbackEncoderVersion: String by project
-val springdocOpenApiVersion: String by project
+val springDocOpenApiVersion: String by project
 val mockServerClientVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
@@ -38,7 +38,7 @@ allprojects {
 		implementation("org.postgresql:postgresql:$postgresqlVersion")
 		implementation("org.flywaydb:flyway-core:$flywayVersion")
 		implementation("net.logstash.logback:logstash-logback-encoder:$logstashLogbackEncoderVersion")
-		implementation("org.springdoc:springdoc-openapi-webflux-ui:$springdocOpenApiVersion")
+		implementation("org.springdoc:springdoc-openapi-webflux-ui:$springDocOpenApiVersion")
 
 		testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testImplementation("io.projectreactor:reactor-test:$reactorTestVersion")
