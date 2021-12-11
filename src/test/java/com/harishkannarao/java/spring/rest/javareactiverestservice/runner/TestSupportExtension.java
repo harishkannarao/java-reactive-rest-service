@@ -1,26 +1,17 @@
 package com.harishkannarao.java.spring.rest.javareactiverestservice.runner;
 
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-
-public class ShutdownExtension implements BeforeAllCallback, ExtensionContext.Store.CloseableResource {
-
-    private static boolean started = false;
+public class TestSupportExtension implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback, AfterEachCallback {
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) {
-        if (!started) {
-            started = true;
-            // Your "before all tests" startup logic goes here
-            // The following line registers a callback hook when the root test context is shut down
-            extensionContext.getRoot().getStore(GLOBAL).put("SHUTDOWN_EXTENSION", this);
-        }
+        PostgresTestRunner.start();
+        MockServerTestRunner.start();
     }
 
     @Override
-    public void close() {
+    public void afterAll(ExtensionContext context) {
         if (SpringBootTestRunner.isRunning()) {
             try {
                 SpringBootTestRunner.stop();
@@ -42,5 +33,15 @@ public class ShutdownExtension implements BeforeAllCallback, ExtensionContext.St
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) {
+
     }
 }
