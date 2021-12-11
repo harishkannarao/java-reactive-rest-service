@@ -4,6 +4,7 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.json.JsonUtil
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.MockServerTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.TestSupportExtension;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -18,6 +19,10 @@ public abstract class AbstractBaseIntegrationTest {
     void globalSetup() {
         if (!SpringBootTestRunner.isRunning()) {
             SpringBootTestRunner.start(getIntegrationTestProperties());
+        } else {
+            if (!CollectionUtils.isEqualCollection(getIntegrationTestProperties(), SpringBootTestRunner.getProperties())) {
+                SpringBootTestRunner.restart(getIntegrationTestProperties());
+            }
         }
 
         MockServerTestRunner.getClient().reset();
