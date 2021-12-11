@@ -11,6 +11,11 @@ public class TestSupportExtension implements BeforeAllCallback, BeforeEachCallba
     }
 
     @Override
+    public void beforeEach(ExtensionContext context) {
+
+    }
+
+    @Override
     public void afterAll(ExtensionContext context) {
         if (SpringBootTestRunner.isRunning()) {
             try {
@@ -37,11 +42,6 @@ public class TestSupportExtension implements BeforeAllCallback, BeforeEachCallba
 
     @Override
     public void afterEach(ExtensionContext context) {
-
-    }
-
-    @Override
-    public void beforeEach(ExtensionContext context) {
 
     }
 }
