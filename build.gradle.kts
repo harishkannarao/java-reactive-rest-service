@@ -15,7 +15,6 @@ val testContainersVersion: String by project
 val logstashLogbackEncoderVersion: String by project
 val springDocOpenApiVersion: String by project
 val mockServerClientVersion: String by project
-val commonsCollectionVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
 version = ""
@@ -46,7 +45,6 @@ allprojects {
 		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
 		testImplementation("org.testcontainers:mockserver:$testContainersVersion")
 		testImplementation("org.mock-server:mockserver-client-java:$mockServerClientVersion")
-		testImplementation("org.apache.commons:commons-collections4:${commonsCollectionVersion}")
 	}
 
 	tasks.withType<Test> {

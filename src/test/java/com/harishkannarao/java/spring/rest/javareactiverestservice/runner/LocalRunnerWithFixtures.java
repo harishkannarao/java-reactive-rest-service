@@ -7,12 +7,9 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Custome
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Properties;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 
@@ -22,14 +19,22 @@ public class LocalRunnerWithFixtures {
         PostgresTestRunner.start();
         MockServerTestRunner.start();
 
-        List<String> finalArgs = Stream.of(
-                        getPostgresTestProperties(),
-                        getMockServerTestProperties(),
-                        getSpringTestProperties(),
-                        Arrays.asList(args)
-                ).flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        SpringBootTestRunner.start(finalArgs);
+        var props = new Properties();
+        props.setProperty("postgresql-datasource.timeout", "10");
+        props.setProperty("postgresql-datasource.host", PostgresTestRunner.getHost());
+        props.setProperty("postgresql-datasource.port", String.valueOf(PostgresTestRunner.getPort()));
+        props.setProperty("postgresql-datasource.database", PostgresTestRunner.getUsername());
+        props.setProperty("postgresql-datasource.username", PostgresTestRunner.getUsername());
+        props.setProperty("postgresql-datasource.password", PostgresTestRunner.getPassword());
+        props.setProperty("spring.flyway.url", PostgresTestRunner.getJdbcUrl());
+        props.setProperty("spring.flyway.user", PostgresTestRunner.getUsername());
+        props.setProperty("spring.flyway.password", PostgresTestRunner.getPassword());
+        props.setProperty("order-service.base-url", MockServerTestRunner.getUrl());
+        props.setProperty("order-service.timeout-seconds", "5");
+        props.setProperty("server.port", "8080");
+        props.setProperty("spring.profiles.active", "int-test");
+
+        SpringBootTestRunner.start(props);
 
         createFixtures();
     }
@@ -62,33 +67,5 @@ public class LocalRunnerWithFixtures {
 
         Stubs.orderServiceStub()
                 .stubDeleteOrders(204);
-    }
-
-    private static List<String> getPostgresTestProperties() {
-        return List.of(
-                "--postgresql-datasource.timeout=10",
-                "--postgresql-datasource.host=" + PostgresTestRunner.getHost(),
-                "--postgresql-datasource.port=" + PostgresTestRunner.getPort(),
-                "--postgresql-datasource.database=" + PostgresTestRunner.getUsername(),
-                "--postgresql-datasource.username=" + PostgresTestRunner.getUsername(),
-                "--postgresql-datasource.password=" + PostgresTestRunner.getPassword(),
-                "--spring.flyway.url=" + PostgresTestRunner.getJdbcUrl(),
-                "--spring.flyway.user=" + PostgresTestRunner.getUsername(),
-                "--spring.flyway.password=" + PostgresTestRunner.getPassword()
-        );
-    }
-
-    private static List<String> getMockServerTestProperties() {
-        return List.of(
-                "--order-service.base-url=" + MockServerTestRunner.getUrl(),
-                "--order-service.timeout-seconds=5"
-        );
-    }
-
-    private static List<String> getSpringTestProperties() {
-        return List.of(
-                "--spring.profiles.active=int-test",
-                "--server.port=8080"
-        );
     }
 }

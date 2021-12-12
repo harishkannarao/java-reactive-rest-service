@@ -6,15 +6,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.Lifecycle;
 import org.springframework.core.env.Environment;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Properties;
 
 public class SpringBootTestRunner {
     private static ConfigurableApplicationContext context;
-    private static String[] properties;
+    private static Properties properties;
 
     public static void stop() {
         if (isRunning()) {
@@ -22,15 +19,16 @@ public class SpringBootTestRunner {
         }
     }
 
-    public static void start(List<String> args) {
-        String[] propertiesArray = args.toArray(String[]::new);
-        context = SpringApplication.run(JavaReactiveRestServiceApplication.class, propertiesArray);
-        properties = propertiesArray;
+    public static void start(Properties props) {
+        var application = new SpringApplication(JavaReactiveRestServiceApplication.class);
+        application.setDefaultProperties(props);
+        context = application.run();
+        properties = props;
     }
 
-    public static void restart(List<String> properties) {
+    public static void restart(Properties props) {
         stop();
-        start(properties);
+        start(props);
     }
 
     public static boolean isRunning() {
@@ -39,12 +37,8 @@ public class SpringBootTestRunner {
                 .orElse(false);
     }
 
-    public static List<String> getProperties() {
-        if (properties != null) {
-            return Stream.of(properties).collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+    public static Properties getProperties() {
+        return Optional.ofNullable(properties).orElseGet(Properties::new);
     }
 
     public static <T> T getBean(Class<T> clazz) {
@@ -52,7 +46,7 @@ public class SpringBootTestRunner {
     }
 
     public static String getPort() {
-        return getBean(Environment.class).getProperty("local.server.port");
+        return getBean(Environment.class).getProperty("server.port");
     }
 
     public static String getApplicationUrl() {
