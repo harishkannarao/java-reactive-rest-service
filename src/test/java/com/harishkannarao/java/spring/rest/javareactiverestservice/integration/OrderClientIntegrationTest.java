@@ -79,7 +79,7 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
     @Test
     void getOrders_shouldTimeout() {
         Stubs.orderServiceStub()
-                .stubGetOrders(200, "[]", Optional.empty(), Optional.of(Delay.seconds(6)));
+                .stubGetOrders(200, "[]", Optional.empty(), Optional.of(Delay.seconds(2)));
 
         WebClientRequestException result = catchThrowableOfType(() -> underTest()
                 .getOrders(Optional.empty(), UUID.randomUUID().toString())
