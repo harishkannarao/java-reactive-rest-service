@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.util.SocketUtils;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
@@ -36,7 +38,7 @@ public abstract class AbstractBaseIntegrationTest {
         customerApiClient().deleteAll().expectStatus().isNoContent();
     }
 
-    protected Properties getIntegrationTestProperties() {
+    private Properties getIntegrationTestProperties() {
         Properties properties = new Properties();
         properties.setProperty("server.port", String.valueOf(RANDOM_SERVER_PORT));
         properties.setProperty("spring.profiles.active", "int-test");
@@ -51,7 +53,14 @@ public abstract class AbstractBaseIntegrationTest {
         properties.setProperty("spring.flyway.password", PostgresTestRunner.getPassword());
         properties.setProperty("order-service.base-url", MockServerTestRunner.getUrl());
         properties.setProperty("order-service.timeout-seconds", "1");
+
+        getAdditionalTestProperties().forEach(properties::setProperty);
+
         return properties;
+    }
+
+    protected Map<String, String> getAdditionalTestProperties() {
+        return Collections.emptyMap();
     }
 
     protected <T> T getBean(Class<T> clazz) {
