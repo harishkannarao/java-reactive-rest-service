@@ -1,6 +1,8 @@
 plugins {
 	id("java")
 	id("org.springframework.boot")
+	id("se.patrikerdes.use-latest-versions")
+	id("com.github.ben-manes.versions")
 }
 
 // variables for gradle.properties
@@ -15,6 +17,7 @@ val testContainersVersion: String by project
 val logstashLogbackEncoderVersion: String by project
 val springDocOpenApiVersion: String by project
 val mockServerClientVersion: String by project
+val bouncyCastleVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
 version = ""
@@ -24,6 +27,8 @@ allprojects {
 
 	apply(plugin= "java")
 	apply(plugin= "org.springframework.boot")
+	apply(plugin= "se.patrikerdes.use-latest-versions")
+	apply(plugin= "com.github.ben-manes.versions")
 
 	repositories {
 		mavenCentral()
@@ -45,6 +50,17 @@ allprojects {
 		testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
 		testImplementation("org.testcontainers:mockserver:$testContainersVersion")
 		testImplementation("org.mock-server:mockserver-client-java:$mockServerClientVersion")
+		testImplementation("org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion")
+		testImplementation("org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion")
+	}
+
+	tasks.useLatestVersions {
+		updateBlacklist = listOf(
+			"org.mock-server:mockserver-client-java",
+			"org.springdoc:springdoc-openapi-webflux-ui"
+		)
+		updateRootProperties = true
+		rootVersionFiles = listOf("gradle.properties")
 	}
 
 	tasks.withType<Test> {

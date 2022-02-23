@@ -9,6 +9,7 @@ This repository is to showcase Reactive REST Service using Java and Spring Boot.
 * Java JDK Version: 17
 * Gradle Version: 7
 * Git Client: Any latest version
+* Docker: Any latest version
 * Integrated Development Environment: Any version of IntelliJ Idea or Eclipse
 
 ## Running the build
@@ -23,4 +24,8 @@ This repository is to showcase Reactive REST Service using Java and Spring Boot.
     
     ./gradlew clean assemble
 
-    java -jar build/libs/java-reactive-rest-service.jar  
+    java -jar build/libs/java-reactive-rest-service.jar 
+
+## Update dependencies to latest version
+
+    ./gradlew useLatestVersions

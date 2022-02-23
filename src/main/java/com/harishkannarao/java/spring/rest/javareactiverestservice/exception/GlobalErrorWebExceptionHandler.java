@@ -9,15 +9,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.server.ServerWebInputException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GlobalErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
 
-    public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources, ErrorProperties errorProperties, ApplicationContext applicationContext) {
-        super(errorAttributes, resources, errorProperties, applicationContext);
+    public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties webProperties, ErrorProperties errorProperties, ApplicationContext applicationContext) {
+        super(errorAttributes, webProperties.getResources(), errorProperties, applicationContext);
     }
 
     @Override
