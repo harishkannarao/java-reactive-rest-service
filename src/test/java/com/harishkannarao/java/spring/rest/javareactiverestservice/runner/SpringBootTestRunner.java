@@ -21,8 +21,10 @@ public class SpringBootTestRunner {
 
     public static void start(Properties props) {
         var application = new SpringApplication(JavaReactiveRestServiceApplication.class);
-        application.setDefaultProperties(props);
-        context = application.run();
+        String[] args = props.entrySet().stream()
+                .map(entry -> String.format("--%s=%s", entry.getKey(), entry.getValue()))
+                .toArray(String[]::new);
+        context = application.run(args);
         properties = props;
     }
 
