@@ -25,6 +25,7 @@ public class MockServerTestRunner {
     }
 
     public static void stop() {
+        MOCK_SERVER_CLIENT.close();
         CONTAINER.stop();
     }
 
