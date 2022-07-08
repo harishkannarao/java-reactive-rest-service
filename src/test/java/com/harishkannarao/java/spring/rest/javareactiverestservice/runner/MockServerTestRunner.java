@@ -13,8 +13,11 @@ public class MockServerTestRunner {
             .withEnv("MOCKSERVER_LOG_LEVEL", "INFO")
             .withEnv("MOCKSERVER_DISABLE_SYSTEM_OUT", "false");
 
+    private static MockServerClient MOCK_SERVER_CLIENT;
+
     public static void start() {
         CONTAINER.start();
+        MOCK_SERVER_CLIENT = new MockServerClient(getHost(), getPort());
     }
 
     public static boolean isRunning() {
@@ -38,6 +41,6 @@ public class MockServerTestRunner {
     }
 
     public static MockServerClient getClient() {
-        return new MockServerClient(getHost(), getPort());
+        return MOCK_SERVER_CLIENT;
     }
 }

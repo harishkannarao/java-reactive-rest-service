@@ -4,9 +4,7 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.json.JsonUtil
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.MockServerTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.PostgresTestRunner;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.SpringBootTestRunner;
-import com.harishkannarao.java.spring.rest.javareactiverestservice.runner.TestSupportExtension;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.util.SocketUtils;
 
 import java.util.Collections;
@@ -15,7 +13,6 @@ import java.util.Properties;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 
-@ExtendWith({TestSupportExtension.class})
 public abstract class AbstractBaseIntegrationTest {
 
     protected static final int RANDOM_SERVER_PORT = SocketUtils.findAvailableTcpPort();

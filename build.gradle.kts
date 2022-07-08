@@ -18,6 +18,7 @@ val logstashLogbackEncoderVersion: String by project
 val springDocOpenApiVersion: String by project
 val mockServerClientVersion: String by project
 val bouncyCastleVersion: String by project
+val junitPlatformLauncherVersion: String by project
 
 group = "com.harishkannarao.java.spring.rest"
 version = ""
@@ -52,6 +53,7 @@ allprojects {
 		testImplementation("org.mock-server:mockserver-client-java:$mockServerClientVersion")
 		testImplementation("org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion")
 		testImplementation("org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion")
+		testImplementation("org.junit.platform:junit-platform-launcher:$junitPlatformLauncherVersion")
 	}
 
 	tasks.useLatestVersions {
