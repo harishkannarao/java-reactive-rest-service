@@ -15,8 +15,6 @@ import static com.harishkannarao.java.spring.rest.javareactiverestservice.client
 
 public abstract class AbstractBaseIntegrationTest {
 
-    protected static final int RANDOM_SERVER_PORT = SocketUtils.findAvailableTcpPort();
-
     @BeforeEach
     void globalSetup() {
         if (!PostgresTestRunner.isRunning()) {
@@ -36,20 +34,7 @@ public abstract class AbstractBaseIntegrationTest {
     }
 
     private Properties getIntegrationTestProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("server.port", String.valueOf(RANDOM_SERVER_PORT));
-        properties.setProperty("spring.profiles.active", "int-test");
-        properties.setProperty("postgresql-datasource.timeout", "10");
-        properties.setProperty("postgresql-datasource.host", PostgresTestRunner.getHost());
-        properties.setProperty("postgresql-datasource.port", String.valueOf(PostgresTestRunner.getPort()));
-        properties.setProperty("postgresql-datasource.database", PostgresTestRunner.getUsername());
-        properties.setProperty("postgresql-datasource.username", PostgresTestRunner.getUsername());
-        properties.setProperty("postgresql-datasource.password", PostgresTestRunner.getPassword());
-        properties.setProperty("spring.flyway.url", PostgresTestRunner.getJdbcUrl());
-        properties.setProperty("spring.flyway.user", PostgresTestRunner.getUsername());
-        properties.setProperty("spring.flyway.password", PostgresTestRunner.getPassword());
-        properties.setProperty("order-service.base-url", MockServerTestRunner.getUrl());
-        properties.setProperty("order-service.timeout-seconds", "1");
+        Properties properties = SpringBootTestRunner.getIntegrationTestProperties();
 
         getAdditionalTestProperties().forEach(properties::setProperty);
 
