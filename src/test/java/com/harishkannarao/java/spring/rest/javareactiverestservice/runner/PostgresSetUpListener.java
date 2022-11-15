@@ -7,7 +7,9 @@ public class PostgresSetUpListener implements TestExecutionListener {
 
     @Override
     public void testPlanExecutionStarted(TestPlan testPlan) {
-        PostgresTestRunner.start();
+        if (Boolean.parseBoolean(System.getProperty("preemptiveStartAppAndDependencies", "false"))) {
+            PostgresTestRunner.start();
+        }
         TestExecutionListener.super.testPlanExecutionStarted(testPlan);
     }
 }

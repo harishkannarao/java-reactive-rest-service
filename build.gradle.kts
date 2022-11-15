@@ -68,7 +68,8 @@ allprojects {
 	tasks.withType<Test> {
 		useJUnitPlatform()
 		val commandLineProperties = System.getProperties().entries.associate { it.key.toString() to it.value }
-		systemProperties(commandLineProperties)
+		val modifiedCommandLineProperties =  commandLineProperties + mapOf(Pair("preemptiveStartAppAndDependencies", true))
+		systemProperties(modifiedCommandLineProperties)
 	}
 
 	tasks.withType<Jar> {

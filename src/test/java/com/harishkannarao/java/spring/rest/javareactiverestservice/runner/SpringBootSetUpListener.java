@@ -7,7 +7,9 @@ public class SpringBootSetUpListener implements TestExecutionListener {
 
     @Override
     public void testPlanExecutionStarted(TestPlan testPlan) {
-        SpringBootTestRunner.start(SpringBootTestRunner.getIntegrationTestProperties());
+        if (Boolean.parseBoolean(System.getProperty("preemptiveStartAppAndDependencies", "false"))) {
+            SpringBootTestRunner.start(SpringBootTestRunner.getIntegrationTestProperties());
+        }
         TestExecutionListener.super.testPlanExecutionStarted(testPlan);
     }
 }

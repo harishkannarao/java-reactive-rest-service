@@ -7,7 +7,9 @@ public class MockServerSetUpListener implements TestExecutionListener {
 
     @Override
     public void testPlanExecutionStarted(TestPlan testPlan) {
-        MockServerTestRunner.start();
+        if (Boolean.parseBoolean(System.getProperty("preemptiveStartAppAndDependencies", "false"))) {
+            MockServerTestRunner.start();
+        }
         TestExecutionListener.super.testPlanExecutionStarted(testPlan);
     }
 }
