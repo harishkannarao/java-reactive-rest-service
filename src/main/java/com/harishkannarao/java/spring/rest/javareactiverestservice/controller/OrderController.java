@@ -12,10 +12,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
-@SuppressWarnings({"unused", "ClassCanBeRecord"})
+@SuppressWarnings({"unused"})
 @RestController
 public class OrderController {
     private final OrderClient orderClient;
@@ -35,6 +36,18 @@ public class OrderController {
                         orderClient.getOrders(
                                 limit,
                                 serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
+    }
+
+    @GetMapping(path = {"/order/{id}"})
+    public Mono<Order> getOrders(
+            @PathVariable(name = "id") UUID id,
+            ServerWebExchange serverWebExchange) {
+        serverWebExchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
+        Mono<Order> order = orderClient.getOrder(id, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE));
+        return order.map(value -> {
+            serverWebExchange.getResponse().setStatusCode(HttpStatus.OK);
+            return value;
+        });
     }
 
     @PostMapping(path = {"/order"})

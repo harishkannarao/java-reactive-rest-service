@@ -4,6 +4,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.model.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -14,6 +15,17 @@ public class OrderServiceStub {
 
     public OrderServiceStub(MockServerClient mockServerClient) {
         this.mockServerClient = mockServerClient;
+    }
+
+
+    public void stubGetOrder(UUID id, int status, String responseBody) {
+        HttpRequest httpRequest = request()
+                .withMethod("GET")
+                .withPath("/order/" + id);
+        HttpResponse httpResponse = response()
+                .withStatusCode(status)
+                .withBody(responseBody, MediaType.APPLICATION_JSON);
+        mockServerClient.when(httpRequest).respond(httpResponse);
     }
 
     public void stubGetOrders(int status,

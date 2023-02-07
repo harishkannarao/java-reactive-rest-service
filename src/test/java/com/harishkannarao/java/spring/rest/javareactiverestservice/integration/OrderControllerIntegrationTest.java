@@ -58,6 +58,30 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
     }
 
     @Test
+    void getOrders_byId() {
+        Order order = OrderFixtures.randomOrder();
+        Stubs.orderServiceStub()
+                .stubGetOrder(order.id(), 200, jsonUtil().toJson(order));
+
+        orderApiClient()
+                .getById(order.id().toString())
+                .expectStatus().isOk()
+                .expectBody(Order.class)
+                .isEqualTo(order);
+    }
+
+    @Test
+    void getOrders_byId_returns404() {
+        Order order = OrderFixtures.randomOrder();
+        Stubs.orderServiceStub()
+                .stubGetOrder(order.id(), 404, "");
+
+        orderApiClient()
+                .getById(order.id().toString())
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     void createOrder() {
         Order order = OrderFixtures.randomOrder();
 

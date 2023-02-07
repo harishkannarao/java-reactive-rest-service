@@ -6,6 +6,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -14,6 +15,16 @@ public class OrderApiClient {
 
     public OrderApiClient(WebTestClient webTestClient) {
         this.webTestClient = webTestClient;
+    }
+
+    public WebTestClient.ResponseSpec getById(String id) {
+        return webTestClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/order/{id}")
+                        .build(Map.of("id", id)))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
     }
 
     public WebTestClient.ResponseSpec get(Optional<Integer> limit) {

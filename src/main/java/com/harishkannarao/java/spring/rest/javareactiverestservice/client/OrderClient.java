@@ -72,6 +72,22 @@ public class OrderClient {
                 .bodyToFlux(Order.class);
     }
 
+    public Mono<Order> getOrder(UUID id, String requestId) {
+        return webClient.get()
+                .uri(uriBuilder -> {
+                            UriBuilder builder = uriBuilder
+                                    .path("/order/{id}");
+                            Map<String, String> variables = new HashMap<>();
+                            variables.put("id", id.toString());
+                            return builder.build(variables);
+                        }
+                )
+                .attribute(REQUEST_ID, requestId)
+                .retrieve()
+                .bodyToMono(Order.class)
+                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty());
+    }
+
     public Mono<Void> createOrder(Mono<Order> order, String requestId) {
         return order.flatMap(it -> webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/order").build())

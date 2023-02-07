@@ -89,6 +89,32 @@ public class OrderClientIntegrationTest extends AbstractBaseIntegrationTest {
     }
 
     @Test
+    void getOrder_byId() {
+        Order order = OrderFixtures.randomOrder();
+        Stubs.orderServiceStub()
+                .stubGetOrder(order.id(), 200, jsonUtil().toJson(order));
+
+        Order result = underTest()
+                .getOrder(order.id(), UUID.randomUUID().toString())
+                .block();
+
+        assertThat(result).isEqualTo(order);
+    }
+
+    @Test
+    void getOrder_byId_returnsEmptyMono() {
+        Order order = OrderFixtures.randomOrder();
+        Stubs.orderServiceStub()
+                .stubGetOrder(order.id(), 404, "");
+
+        Optional<Order> result = underTest()
+                .getOrder(order.id(), UUID.randomUUID().toString())
+                .blockOptional();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     void getCustomerOrders() {
         Order order1 = OrderFixtures.randomOrder();
         Order order2 = OrderFixtures.randomOrder();
