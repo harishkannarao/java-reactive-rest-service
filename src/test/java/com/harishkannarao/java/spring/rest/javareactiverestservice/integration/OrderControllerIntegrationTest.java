@@ -3,6 +3,7 @@ package com.harishkannarao.java.spring.rest.javareactiverestservice.integration;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.fixture.OrderFixtures;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.model.Order;
 import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.RequestDefinition;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.orderApiClient;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
 
 public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest {
 
@@ -66,6 +69,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
         orderApiClient()
                 .getById(order.id().toString())
                 .expectStatus().isOk()
+                .expectHeader().value("X-ORDER-ID", emptyOrNullString())
                 .expectBody(Order.class)
                 .isEqualTo(order);
     }
@@ -78,6 +82,7 @@ public class OrderControllerIntegrationTest extends AbstractBaseIntegrationTest 
 
         orderApiClient()
                 .getById(order.id().toString())
+                .expectHeader().value("X-ORDER-ID", equalTo(order.id().toString()))
                 .expectStatus().isNotFound();
     }
 

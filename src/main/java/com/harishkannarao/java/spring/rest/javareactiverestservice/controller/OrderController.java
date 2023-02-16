@@ -42,12 +42,11 @@ public class OrderController {
     public Mono<Order> getOrders(
             @PathVariable(name = "id") UUID id,
             ServerWebExchange serverWebExchange) {
-        serverWebExchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
-        Mono<Order> order = orderClient.getOrder(id, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE));
-        return order.map(value -> {
-            serverWebExchange.getResponse().setStatusCode(HttpStatus.OK);
-            return value;
-        });
+        return orderClient.getOrder(id, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))
+                .switchIfEmpty(Mono.error(() -> {
+                    serverWebExchange.getResponse().getHeaders().set("X-ORDER-ID", id.toString());
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND);
+                }));
     }
 
     @PostMapping(path = {"/order"})
