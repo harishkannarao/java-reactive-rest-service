@@ -9,3 +9,7 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+
+file-system-static-content:
+  enabled: ${FILE_SYSTEM_STATIC_CONTENT_ENABLED:false}
+  path: ${FILE_SYSTEM_STATIC_CONTENT_PATH} # can be set to /opt/static/ to serve static resources from file system
