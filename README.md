@@ -14,7 +14,7 @@ This repository is to showcase Reactive REST Service using Java and Spring Boot.
 
 ## Running the build
 
-    ./gradlew clean build
+    ./gradlew clean build --info
     
 ## Running the application using build tool
 
