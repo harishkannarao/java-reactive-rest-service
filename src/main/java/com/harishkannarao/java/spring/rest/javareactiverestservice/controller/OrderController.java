@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.filter.HttpAccessLoggingFilter.REQUEST_ID_ATTRIBUTE;
 import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
 @SuppressWarnings({"unused"})
@@ -35,14 +36,14 @@ public class OrderController {
                 .body(
                         orderClient.getOrders(
                                 limit,
-                                serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
+                                serverWebExchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE)));
     }
 
     @GetMapping(path = {"/order/{id}"})
     public Mono<Order> getOrders(
             @PathVariable(name = "id") UUID id,
             ServerWebExchange serverWebExchange) {
-        return orderClient.getOrder(id, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))
+        return orderClient.getOrder(id, serverWebExchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE))
                 .switchIfEmpty(Mono.error(() -> {
                     serverWebExchange.getResponse().getHeaders().set("X-ORDER-ID", id.toString());
                     return new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -53,7 +54,7 @@ public class OrderController {
     public ResponseEntity<Mono<Void>> createOrder(@RequestBody(required = false) Mono<Order> order, ServerWebExchange serverWebExchange) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(
-                        orderClient.createOrder(order, serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE)));
+                        orderClient.createOrder(order, serverWebExchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE)));
     }
 
     @PostMapping(path = {"/order/delete"})
@@ -68,7 +69,7 @@ public class OrderController {
                 .body(
                         orderClient.deleteOrders(
                                 orders.take(maxOrdersInPayload, true),
-                                serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))
+                                serverWebExchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE))
                 );
     }
 }

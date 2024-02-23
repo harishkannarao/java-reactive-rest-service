@@ -14,15 +14,16 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static net.logstash.logback.argument.StructuredArguments.fields;
-import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
 
 @SuppressWarnings({"NullableProblems", "unused"})
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class HttpAccessLoggingFilter implements WebFilter {
     public static final String REQUEST_START_TIME_ATTRIBUTE = "REQUEST_START_TIME";
+    public static final String REQUEST_ID_ATTRIBUTE = "REQUEST_ID";
     public static final String REQUEST_TIMESTAMP_ATTRIBUTE = "REQUEST_TIMESTAMP";
 
     private final Logger logger = LoggerFactory.getLogger(HttpAccessLoggingFilter.class);
@@ -30,11 +31,12 @@ public class HttpAccessLoggingFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         exchange.getAttributes().put(REQUEST_START_TIME_ATTRIBUTE, System.currentTimeMillis());
+        exchange.getAttributes().put(REQUEST_ID_ATTRIBUTE, UUID.randomUUID().toString());
         exchange.getAttributes().put(REQUEST_TIMESTAMP_ATTRIBUTE, OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).format(DateTimeFormatter.ISO_DATE_TIME));
         exchange.getResponse().beforeCommit(() -> {
             AccessLogEntries accessLogEntries = new AccessLogEntries(
                     exchange.getResponse().getRawStatusCode(),
-                    exchange.getRequiredAttribute(LOG_ID_ATTRIBUTE),
+                    exchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE),
                     exchange.getRequest().getMethodValue(),
                     exchange.getRequest().getPath().pathWithinApplication().value(),
                     exchange.getRequest().getQueryParams().toString(),

@@ -16,7 +16,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
-import static org.springframework.web.server.ServerWebExchange.LOG_ID_ATTRIBUTE;
+import static com.harishkannarao.java.spring.rest.javareactiverestservice.filter.HttpAccessLoggingFilter.REQUEST_ID_ATTRIBUTE;
 
 @SuppressWarnings({"ClassCanBeRecord", "unused"})
 @RestController
@@ -36,7 +36,7 @@ public class CustomerOrderController {
             ServerWebExchange serverWebExchange) {
         Flux<Order> result = customerRepository.getCustomer(customerId)
                 .transform(it -> MonoTransformers.errorOnEmpty(it, () -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                .map(it -> orderClient.getCustomerOrders(it.id(), serverWebExchange.getRequiredAttribute(LOG_ID_ATTRIBUTE))).flux()
+                .map(it -> orderClient.getCustomerOrders(it.id(), serverWebExchange.getRequiredAttribute(REQUEST_ID_ATTRIBUTE))).flux()
                 .flatMap(it -> it);
         return ResponseEntity.ok().body(result);
     }
