@@ -10,6 +10,8 @@ import org.springframework.util.SocketUtils;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 
@@ -17,12 +19,23 @@ public abstract class AbstractBaseIntegrationTest {
 
     @BeforeEach
     void globalSetup() {
-        if (!PostgresTestRunner.isRunning()) {
-            PostgresTestRunner.start();
-        }
-        if (!MockServerTestRunner.isRunning()) {
-            MockServerTestRunner.start();
-        }
+        Supplier<Boolean> postgresStarter = () -> {
+            if (!PostgresTestRunner.isRunning()) {
+                PostgresTestRunner.start();
+            }
+            return true;
+        };
+        Supplier<Boolean> mockServerStarter = () -> {
+            if (!MockServerTestRunner.isRunning()) {
+                MockServerTestRunner.start();
+            }
+            return true;
+        };
+        Stream.of(postgresStarter, mockServerStarter)
+                .parallel()
+                .map(Supplier::get)
+                .forEach(aBoolean -> {});
+
         if (!SpringBootTestRunner.isRunning()) {
             SpringBootTestRunner.start(getIntegrationTestProperties());
         } else if (!getIntegrationTestProperties().equals(SpringBootTestRunner.getProperties())) {

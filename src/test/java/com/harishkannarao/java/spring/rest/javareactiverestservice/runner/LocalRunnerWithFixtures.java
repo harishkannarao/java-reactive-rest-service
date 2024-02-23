@@ -10,14 +10,26 @@ import com.harishkannarao.java.spring.rest.javareactiverestservice.stub.Stubs;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.harishkannarao.java.spring.rest.javareactiverestservice.client.Clients.customerApiClient;
 
 public class LocalRunnerWithFixtures {
 
     public static void main(String[] args) {
-        PostgresTestRunner.start();
-        MockServerTestRunner.start();
+        Supplier<Boolean> postgresStarter = () -> {
+            PostgresTestRunner.start();
+            return true;
+        };
+        Supplier<Boolean> mockServerStarter = () -> {
+            MockServerTestRunner.start();
+            return true;
+        };
+        Stream.of(postgresStarter, mockServerStarter)
+                .parallel()
+                .map(Supplier::get)
+                .forEach(aBoolean -> {});
 
         var props = new Properties();
         props.setProperty("postgresql-datasource.timeout", "10");
