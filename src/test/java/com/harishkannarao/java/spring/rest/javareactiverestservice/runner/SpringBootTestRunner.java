@@ -70,7 +70,7 @@ public class SpringBootTestRunner {
         properties.setProperty("spring.flyway.user", PostgresTestRunner.getUsername());
         properties.setProperty("spring.flyway.password", PostgresTestRunner.getPassword());
         properties.setProperty("order-service.base-url", MockServerTestRunner.getUrl());
-        properties.setProperty("order-service.timeout-seconds", "1");
+        properties.setProperty("webclient.timeout-seconds", "1");
 
         return properties;
     }
