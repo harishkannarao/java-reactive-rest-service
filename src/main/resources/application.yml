@@ -13,3 +13,13 @@ springdoc:
 file-system-static-content:
   enabled: ${FILE_SYSTEM_STATIC_CONTENT_ENABLED:false}
   path: ${FILE_SYSTEM_STATIC_CONTENT_PATH} # can be set to /opt/static/ to serve static resources from file system
+
+logging:
+  level:
+    reactor:
+      netty:
+        http:
+          client: "${NETTY_HTTP_CLIENT_LOG_LEVEL:INFO}"
+
+webclient:
+  timeout-seconds: "${WEBCLIENT_TIMEOUT_SECONDS:1}"

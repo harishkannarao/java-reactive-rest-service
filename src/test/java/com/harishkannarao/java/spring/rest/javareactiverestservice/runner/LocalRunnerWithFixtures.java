@@ -42,7 +42,6 @@ public class LocalRunnerWithFixtures {
         props.setProperty("spring.flyway.user", PostgresTestRunner.getUsername());
         props.setProperty("spring.flyway.password", PostgresTestRunner.getPassword());
         props.setProperty("order-service.base-url", MockServerTestRunner.getUrl());
-        props.setProperty("webclient.timeout-seconds", "5");
         props.setProperty("server.port", "8080");
         props.setProperty("spring.profiles.active", "int-test");
 
